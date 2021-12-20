@@ -1,0 +1,6 @@
+export * as barChart from './barChart'
+export * as heatMap from './heatMap'
+export * as histogram from './histogram'
+export * as lineChart from './lineChart'
+export * as scatterPlot from './scatterPlot'
+export * as tree from './tree'

@@ -1,7 +1,18 @@
-const render = {}
+import { histogram, lineChart, barChart, scatterPlot, heatMap } from './charts'
+
+const render = {
+  lineChart,
+  scatterPlot,
+  heatMap,
+  barChart,
+  histogram,
+}
+
 const visPrototype = {
   render,
+  visor: () => {},
 }
+
 const target = Object.create(visPrototype)
 const handler = {
   get(target: object, prop: PropertyKey, receiver: any) {
