@@ -1,0 +1,61 @@
+{
+  "name": "vis",
+  "version": "0.0.1",
+  "description": "data visualization with d3",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development rollup -wc rollup.config.js",
+    "build:dev": "cross-env NODE_ENV=development rollup -c rollup.config.js",
+    "build:prod": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fogcity/vis.git"
+  },
+  "keywords": [
+    "data visualization",
+    "d3"
+  ],
+  "author": {
+    "name": "Trevor Xu",
+    "email": "xymzhs@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fogcity/vis/issues"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "15 KB"
+    }
+  ],
+  "homepage": "https://github.com/fogcity/vis#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@size-limit/preset-small-lib": "^5.0.5",
+    "@types/d3": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "d3": "^7.2.1",
+    "prettier": "^2.5.1",
+    "rollup": "^2.61.1",
+    "rollup-plugin-filesize": "^9.1.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-terser": "^6.1.0",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "size-limit": "^5.0.5",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
+  },
+  "peerDependencies": {
+    "d3": ">=7.2.1"
+  }
+}
