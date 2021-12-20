@@ -1,4 +1,5 @@
 import { histogram, lineChart, barChart, scatterPlot, heatMap } from './charts'
+import { createVisor } from './core'
 
 const render = {
   lineChart,
@@ -10,7 +11,7 @@ const render = {
 
 const visPrototype = {
   render,
-  visor: () => {},
+  visor: createVisor,
 }
 
 const target = Object.create(visPrototype)
