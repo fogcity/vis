@@ -1,1 +1,2 @@
-export * as createVisor from '../core/visor'
+import createVisor from '../core/visor'
+export default createVisor

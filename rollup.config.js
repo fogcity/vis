@@ -12,7 +12,7 @@ export default {
     {
       file: packageJson.module,
       format: 'es',
-      sourcemap: process.env.NODE_ENV == 'dev',
+      sourcemap: process.env.NODE_ENV == 'development',
     },
   ],
   plugins: [
@@ -20,6 +20,7 @@ export default {
     filesize(),
     resolve(),
     commonjs(),
+
     typescript({ tsconfig: 'tsconfig.json' }),
     process.env.NODE_ENV == 'production' && terser(),
   ],

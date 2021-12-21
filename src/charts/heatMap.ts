@@ -1,8 +1,8 @@
-import { ChartOpts } from '../core/visor'
+import { VisorOptions } from '../core/visor'
 
 const heatMap = (
-  chartConatiner: HTMLElement,
+  container: HTMLElement,
   data: { values: number[][]; xTickLabels: string; yTickLabels: string },
-  opts: ChartOpts,
+  opts: VisorOptions,
 ) => {}
 export default heatMap

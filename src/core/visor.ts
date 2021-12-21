@@ -1,38 +1,43 @@
 import * as d3 from 'd3'
-export type ChartOpts = {
+import { combineDimensions, Dimensions } from './dimensions'
+export type VisorOptions = {
   color: string | string[] // Fill color for bars. Should be a valid CSS color string
-  width: number // Width of chart in px
-  height: number // Height of chart in px
   xLabel: string // Label for xAxis
   yLabel: string // Label for yAxis
   fontSize: string
-  marginTop: number // Margin container top of chart in px
-  marginBottom: number // Margin container bottom of chart in px
-  marginLeft: number // Margin container left of chart in px
-  marginRight: number // Margin container rignt of chart in px
   xType: 'quantitative' | 'ordinal' | 'nominal'
   yType: 'quantitative' | 'ordinal' | 'nominal'
-}
+} & Dimensions
+
 export type ChartData = { values: { index: number; value: number }[]; series: any[] }
-const createVisor = (container: HTMLElement, data: any[], opts: ChartOpts) => {
-  const settings = opts
-  let visor: any
-  if (container.tagName == 'svg') {
-    visor = d3.select(container).data(data).enter().append('g')
-  } else {
-    visor = d3.select(container).selectAll().data(data).enter().append('g')
-  }
-  const resizeObserver = new ResizeObserver((entries) => {
-    for (let entry of entries) {
-      visor.style('width', function () {
-        return Math.max(0, entry.contentRect.width - settings.marginLeft - settings.marginRight) + 'px'
-      })
-      visor.style('height', function () {
-        return Math.max(0, entry.contentRect.height - settings.marginTop - settings.marginBottom) + 'px'
-      })
-    }
-  })
-  resizeObserver.observe(container)
+
+const createVisor = (
+  container: HTMLElement,
+  renderer: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => void,
+  opts: VisorOptions,
+) => {
+  const dimensions = combineDimensions({ ...{ width: container.clientWidth, height: container.clientHeight }, ...opts })
+  console.log('dimensions', dimensions)
+
+  const wrapper = d3.select(container)
+  wrapper.selectAll('*').remove()
+
+  // Adding an SVG element
+  const svg = wrapper.append('svg')
+  svg.attr('width', dimensions.width)
+  svg.attr('height', dimensions.height)
+
+  console.log('svg', svg)
+
+  // Creating our bounding box - Visor
+  const visor = svg
+    .append('g')
+    .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
+    .style('width', dimensions.boundedWidth)
+    .style('height', dimensions.boundedHeight)
+  console.log('visor', visor)
+
+  renderer?.(visor, dimensions)
 }
 
 export default createVisor

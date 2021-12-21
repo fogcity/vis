@@ -1,5 +1,5 @@
-import { ChartOpts } from '../core/visor'
+import { VisorOptions } from '../core/visor'
 
-const histogram = (chartConatiner: HTMLElement, data: number[], opts: ChartOpts) => {}
+const histogram = (container: HTMLElement, data: number[], opts: VisorOptions) => {}
 
 export default histogram

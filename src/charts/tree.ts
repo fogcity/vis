@@ -1,4 +1,4 @@
-import { ChartData, ChartOpts } from '../core/visor'
+import { ChartData, VisorOptions } from '../core/visor'
 
-const tree = (chartConatiner: HTMLElement, data: Pick<ChartData, 'values'>, opts: ChartOpts) => {}
+const tree = (container: HTMLElement, data: Pick<ChartData, 'values'>, opts: VisorOptions) => {}
 export default tree
