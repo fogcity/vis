@@ -1,1 +1,1 @@
-import './lineChartExample'
+import './barChart'

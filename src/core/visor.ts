@@ -17,7 +17,6 @@ const createVisor = (
   opts: VisorOptions,
 ) => {
   const dimensions = combineDimensions({ ...{ width: container.clientWidth, height: container.clientHeight }, ...opts })
-  console.log('dimensions', dimensions)
 
   const wrapper = d3.select(container)
   wrapper.selectAll('*').remove()
@@ -35,7 +34,6 @@ const createVisor = (
     .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
     .style('width', dimensions.boundedWidth)
     .style('height', dimensions.boundedHeight)
-  console.log('visor', visor)
 
   renderer?.(visor, dimensions)
 }

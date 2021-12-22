@@ -1,14 +1,10 @@
-import { vis } from '../dist'
-console.log(
-  new Array(100).map((v) => ({
-    x: Math.ceil(Math.random() * 100),
-    y: Math.random() * 100,
-  })),
-)
+import { vis } from './build'
+const dataset = [...new Array(50)].map((v, i) => [i, Math.random() * 100])
+
 vis.render.lineChart(
   document.getElementById('root'),
   {
-    dataset: [...new Array(100)].map((v, i) => [i, Math.ceil(Math.random() * 100)]),
+    dataset,
   },
   {
     showXGrid: true,

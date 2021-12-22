@@ -1,4 +1,4 @@
-import { vis } from '../dist'
+import { vis } from './build'
 console.log(
   new Array(100).map((v) => ({
     x: Math.ceil(Math.random() * 100),

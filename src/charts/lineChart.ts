@@ -15,6 +15,7 @@ type ScatterPlotOpts = VisorOptions & {
   showYGrid: boolean
   yGridColor: string
   xGridColor: string
+  curve: d3.CurveFactoryLineOnly | d3.CurveFactory
 }
 const lineChart = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
@@ -26,6 +27,7 @@ const lineChart = (container: HTMLElement, params: ScatterPlotParams, opts: Scat
       yAccessor,
       xAccessor,
       lineWidth = 2,
+      curve = d3.curveLinear,
       color,
       noYDomain = false,
       noXDomain = false,
@@ -43,12 +45,17 @@ const lineChart = (container: HTMLElement, params: ScatterPlotParams, opts: Scat
       .range([dimensions.boundedHeight, 0])
       .nice()
 
+    console.log('yScale', yScale)
+
     // Draw data
     const drawLines = (dataset: linePoint[], color: string) => {
       const lineGenerator = d3
         .line()
+        .curve(curve)
         .x((d) => xScale(xAccessor(d)))
-        .y((d) => yScale(yAccessor(d)))
+        .y((d) => {
+          return yScale(yAccessor(d))
+        })
       const line = bounds
         .append('path')
         .attr('d', lineGenerator(dataset))
