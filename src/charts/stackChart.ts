@@ -2,13 +2,13 @@ import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
 import createVisor, { VisorOptions } from '../core/visor'
 
-type linePoint = [number, number]
-type lineChartParams = { dataset: linePoint[]; series: any[] }
-type lineChartOpts = VisorOptions & {
-  yAccessor: (d: linePoint) => number
-  xAccessor: (d: linePoint) => number
+type layer = { time: Date } & keyof Pick<StackChartParams, 'series'>
+type StackChartParams = { dataset: layer[] }
+type StackChartOpts = VisorOptions & {
+  yAccessor: (d: layer) => number
+  xAccessor: (d: layer) => Date
   lineWidth: number
-  color: string
+  colors: string[]
   noYDomain: boolean
   noXDomain: boolean
   showXGrid: boolean
@@ -17,51 +17,61 @@ type lineChartOpts = VisorOptions & {
   xGridColor: string
   curve: d3.CurveFactoryLineOnly | d3.CurveFactory
 }
-const lineChart = (container: HTMLElement, params: lineChartParams, opts: lineChartOpts) => {
+const lineChart = (container: HTMLElement, params: StackChartParams, opts: StackChartOpts) => {
+  const { dataset, series } = params
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
       showXGrid = false,
       showYGrid = false,
       xGridColor = '#eee',
       yGridColor = '#eee',
-      yAccessor,
-      xAccessor,
+      yAccessor = (d: layer) => d.time,
+      xAccessor = (d: layer) => d.time,
       lineWidth = 2,
       curve = d3.curveLinear,
-      color,
+      colors,
       noYDomain = false,
       noXDomain = false,
     } = opts
 
     const xScale = d3
-      .scaleLinear()
-      .domain(d3.extent(params.dataset, xAccessor) as number[])
-      .range([0, dimensions.boundedWidth])
+      .scaleTime()
+      .domain(d3.extent(dataset, xAccessor) as Date[])
       .nice()
 
+    const flattenValues: number[] = []
+    for (const iterator of dataset) {
+      for (const key in iterator) {
+        if (Object.prototype.hasOwnProperty.call(iterator, key)) {
+          const element = iterator[key]
+          if (typeof element == 'number') flattenValues.push(element)
+        }
+      }
+    }
     const yScale = d3
       .scaleLinear()
-      .domain(d3.extent(params.dataset, yAccessor) as number[])
+      .domain(d3.extent(flattenValues) as [number, number])
       .range([dimensions.boundedHeight, 0])
       .nice()
 
-    console.log('yScale', yScale)
-
     // Draw data
-    const drawLines = (dataset: linePoint[], color: string) => {
-      const lineGenerator = d3
-        .line()
-        .curve(curve)
-        .x((d) => xScale(xAccessor(d)))
-        .y((d) => {
-          return yScale(yAccessor(d))
-        })
-      const line = bounds
-        .append('path')
-        .attr('d', lineGenerator(dataset))
-        .attr('fill', 'none')
-        .attr('stroke', color)
-        .attr('stroke-width', lineWidth)
+    const drawStack = (dataset: layer[], color: string) => {
+      const stackGenerator = d3.stack().keys(series)
+      const stackedSeries = stackGenerator(dataset)
+      const colorScale = d3.scaleOrdinal().domain(series).range(colors)
+
+      const areaGen = d3
+        .area()
+        .x((d) => xScale(d.data.month))
+        .y0((d) => yScale(d[0]))
+        .y1((d) => yScale(d[1]))
+
+      d3.select('#demo1')
+        .selectAll('.areas')
+        .data(stackedSeries)
+        .join('path')
+        .attr('d', areaGen)
+        .attr('fill', (d) => colorScale(d.key))
     }
 
     // Draw bottom axis
@@ -116,7 +126,7 @@ const lineChart = (container: HTMLElement, params: lineChartParams, opts: lineCh
         .style('text-anchor', 'middle')
     }
 
-    drawLines(params.dataset, color)
+    drawStack(params.dataset, color)
   }
 
   createVisor(container, renderer, opts)

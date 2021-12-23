@@ -6,7 +6,13 @@ import createVisor, { VisorOptions } from '../core/visor'
 type Datum = { key: string; value: number }
 
 // All params and visor settings
-type pieChartParams = { radius: number; colors: string[]; dataset: Datum[]; series: any[] }
+type pieChartParams = {
+  padAngle: number // Spacing angle between each block
+  innerRadius: number // Inner ring radius
+  radius: number
+  colors: string[]
+  dataset: Datum[]
+}
 type pieChartOpts = VisorOptions & {}
 
 /**
@@ -26,47 +32,53 @@ const pieChart = (container: HTMLElement, params: pieChartParams, opts: pieChart
    *  3. Label each slice directly.
    */
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
-    const { radius, colors, dataset } = params
-    console.log('dataset', dataset)
-    console.log(colors)
+    const { padAngle, radius = 40, innerRadius = radius * 0.7, colors, dataset } = params
 
-    const colorScale = d3
-      .scaleOrdinal<string>()
-      .domain(dataset.map((v) => v.key))
-      .range(colors)
-
-    console.log('colorScale', colorScale)
+    const combinedDataset =
+      dataset.length > 5
+        ? [
+            ...dataset.slice(0, 4),
+            {
+              key: 'other',
+              value: dataset.slice(4).reduce((a, v, i) => {
+                a += v.value
+                return a
+              }, 0),
+            },
+          ]
+        : dataset
 
     // Draw data
     const drawPie = () => {
-      const pie = d3
+      const arcGenerator = d3
         .pie<Datum>()
-        .sort(null)
-        .value(function (d) {
-          return d.value
-        })
+        .sort((a, b) => a.value - b.value)
+        .padAngle(padAngle)
+        .value((d) => d.value)
 
-      const path = d3
+      const arcs = arcGenerator(combinedDataset)
+
+      const colorScale = d3
+        .scaleOrdinal<string>()
+        .domain(arcs.map((d) => d.data.key))
+        .range(colors)
+
+      const arc = d3
         .arc()
-        .outerRadius(radius - 10)
-        .innerRadius(0)
-
-      console.log('pie(dataset)', pie(dataset))
-
-      const label = d3
-        .arc()
+        .innerRadius(Math.min(radius, innerRadius)) // set to 0 for a pie chart
         .outerRadius(radius)
-        .innerRadius(radius - 80)
 
-      const arc = bounds
-        .selectAll('arc')
-        .data(pie(dataset))
+      bounds.style('transform', `translate(${dimensions.boundedWidth / 2}px,${dimensions.boundedHeight / 2}px)`)
+
+      bounds
+        .selectAll('path')
+        .data(arcs)
         .enter()
         .append('path')
-        .attr('d', path as any)
-        .attr('fill', function (d) {
-          return colorScale(d.data.key)
-        })
+        .attr('fill', (d) => (d.data.key == 'other' ? '#dadadd' : colorScale(d.data.key)))
+        .attr('d', arc as any)
+        .append('title')
+        .text((d) => d.data.key)
     }
 
     drawPie()
