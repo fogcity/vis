@@ -1,4 +1,4 @@
-import { scatterPlot, lineChart, barChart } from './charts'
+import { pieChart, scatterPlot, lineChart, barChart } from './charts'
 import map from './map'
 import createVisor from './core'
 const vis = {
@@ -7,6 +7,7 @@ const vis = {
     scatterPlot,
     lineChart,
     barChart,
+    pieChart,
   },
   visor: createVisor,
 }
