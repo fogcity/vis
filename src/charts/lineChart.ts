@@ -1,23 +1,17 @@
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
-import createVisor, { VisorOptions } from '../core/visor'
+import createVisor, { VisOptions } from '../core/createVisor'
 
 type linePoint = [number, number]
 type lineChartParams = { dataset: linePoint[]; series: any[] }
-type lineChartOpts = VisorOptions & {
+type lineChartOpts = VisOptions & {
   yAccessor: (d: linePoint) => number
   xAccessor: (d: linePoint) => number
   lineWidth: number
   color: string
-  noYDomain: boolean
-  noXDomain: boolean
-  showXGrid: boolean
-  showYGrid: boolean
-  yGridColor: string
-  xGridColor: string
   curve: d3.CurveFactoryLineOnly | d3.CurveFactory
 }
-const lineChart = (container: HTMLElement, params: lineChartParams, opts: lineChartOpts) => {
+const LineChart = (container: HTMLElement, params: lineChartParams, opts: lineChartOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
       showXGrid = false,
@@ -121,4 +115,4 @@ const lineChart = (container: HTMLElement, params: lineChartParams, opts: lineCh
 
   createVisor(container, renderer, opts)
 }
-export default lineChart
+export default LineChart

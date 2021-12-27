@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
-import createVisor, { VisorOptions } from '../core/visor'
+import createVisor, { VisOptions } from '../core/createVisor'
 
 // Each slice's data struct
 type Datum = { key: string; value: number }
@@ -13,7 +13,7 @@ type pieChartParams = {
   colors: string[]
   dataset: Datum[]
 }
-type pieChartOpts = VisorOptions & {}
+type pieChartOpts = VisOptions & {}
 
 /**
  * Pie Chart - angle of a slice represents a continuous or discrete metric

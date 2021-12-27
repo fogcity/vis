@@ -1,12 +1,26 @@
 import * as d3 from 'd3'
 import { combineDimensions, Dimensions } from './dimensions'
-export type VisorOptions = {
+export type VisOptions = {
   color: string | string[] // Fill color for bars. Should be a valid CSS color string
-  xLabel: string // Label for xAxis
-  yLabel: string // Label for yAxis
-  fontSize: string
-  xType: 'quantitative' | 'ordinal' | 'nominal'
-  yType: 'quantitative' | 'ordinal' | 'nominal'
+  xLabel?: string // Label for xAxis
+  yLabel?: string // Label for yAxis
+  fontSize?: string
+  xDomain?: []
+  yDomain?: []
+  zDomain?: []
+  noYAxisLine?: boolean
+  noXAxisLine?: boolean
+  noYAxisTick?: boolean
+  noXAxisTick?: boolean
+  showXAxisGrid?: boolean
+  showYAxisGrid?: boolean
+  yAxisGridColor?: string
+  xAxisGridColor?: string
+  xType: Function
+  yType: Function
+  zType: Function
+  xRange: []
+  yRange: []
 } & Dimensions
 
 export type ChartData = { values: { index: number; value: number }[]; series: any[] }
@@ -14,7 +28,7 @@ export type ChartData = { values: { index: number; value: number }[]; series: an
 const createVisor = (
   container: HTMLElement,
   renderer: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => void,
-  opts: VisorOptions,
+  opts: VisOptions,
 ) => {
   const dimensions = combineDimensions({ ...{ width: container.clientWidth, height: container.clientHeight }, ...opts })
 

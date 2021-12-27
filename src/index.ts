@@ -1,16 +1,12 @@
-import { stackChart, pieChart, scatterPlot, lineChart, barChart } from './charts'
+import { StackedBarChart, PieChart, ScatterPlot, LineChart, BarChart } from './charts'
 import map from './map'
-import createVisor from './core'
 const vis = {
-  render: {
-    map,
-    scatterPlot,
-    lineChart,
-    barChart,
-    pieChart,
-    stackChart,
-  },
-  visor: createVisor,
+  renderMap: map,
+  renderScatterPlot: ScatterPlot,
+  renderLineChart: LineChart,
+  renderBarChart: BarChart,
+  renderPieChart: PieChart,
+  renderStackedBarChart: StackedBarChart,
 }
 
 export { vis }

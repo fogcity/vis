@@ -1,22 +1,16 @@
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
-import createVisor, { VisorOptions } from '../core/visor'
+import createVisor, { VisOptions } from '../core/createVisor'
 
 type ScatterPoint = { x: number; y: number }
 type ScatterPlotParams = { dataset: ScatterPoint[]; series: any[] }
-type ScatterPlotOpts = VisorOptions & {
+type ScatterPlotOpts = VisOptions & {
   yAccessor: (d: ScatterPoint) => number
   xAccessor: (d: ScatterPoint) => number
   rAccessor: (d: ScatterPoint) => number
   color: string
-  noYDomain: boolean
-  noXDomain: boolean
-  showXGrid: boolean
-  showYGrid: boolean
-  yGridColor: string
-  xGridColor: string
 }
-const scatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
+const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
       showXGrid = false,
@@ -111,4 +105,4 @@ const scatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: Sc
 
   createVisor(container, renderer, opts)
 }
-export default scatterPlot
+export default ScatterPlot

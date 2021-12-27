@@ -1,7 +1,7 @@
 import d3 from 'd3'
 
-const getColorScale = (datas: any[], colors: string[]) => {
+const useColorScale = (datas: string[], colors: string[]) => {
   return d3.scaleOrdinal().domain(datas).range(colors)
 }
 
-export { getColorScale }
+export { useColorScale }

@@ -1,4 +1,4 @@
-import { VisorOptions } from '../core/visor'
+import { VisOptions } from '../core/createVisor'
 /**
  * HeatMap - vertical position of a square represents the day of the week (discrete) - horizontal position of a square represents the week of the year (discrete) - color of
  * a square represents a continuous or discrete metric value (often using a sequential
@@ -7,9 +7,9 @@ import { VisorOptions } from '../core/visor'
  * @param data
  * @param opts
  */
-const heatMap = (
+const HeatMap = (
   container: HTMLElement,
   data: { values: number[][]; xTickLabels: string; yTickLabels: string },
-  opts: VisorOptions,
+  opts: VisOptions,
 ) => {}
-export default heatMap
+export default HeatMap

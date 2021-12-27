@@ -1,4 +1,4 @@
-import { ChartData, VisorOptions } from '../core/visor'
+import { ChartData, VisOptions } from '../core/createVisor'
 
-const barChart = (container: HTMLElement, data: Pick<ChartData, 'values'>, opts: VisorOptions) => {}
-export default barChart
+const AreaChart = (container: HTMLElement, data: Pick<ChartData, 'values'>, opts: VisOptions) => {}
+export default AreaChart

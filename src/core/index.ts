@@ -1,2 +1,2 @@
-import createVisor from '../core/visor'
+import createVisor from './createVisor'
 export default createVisor

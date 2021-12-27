@@ -1,23 +1,17 @@
-import createVisor, { ChartData, VisorOptions } from '../core/visor'
+import createVisor, { ChartData, VisOptions } from '../core/createVisor'
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
 
 type rect = { key: string; value: number }
 type BarChartParams = { dataset: rect[]; series: any[] }
-type BarChartOpts = VisorOptions & {
+type BarChartOpts = VisOptions & {
   yAccessor: (d: rect) => number
   xAccessor: (d: rect) => string
   color: string
-  noYDomain: boolean
-  noXDomain: boolean
-  showXGrid: boolean
-  showYGrid: boolean
-  yGridColor: string
-  xGridColor: string
   horizontal: boolean
   gap: number
 }
-const barChart = (container: HTMLElement, params: BarChartParams, opts: BarChartOpts) => {
+const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChartOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
       showXGrid = false,
@@ -183,4 +177,4 @@ const barChart = (container: HTMLElement, params: BarChartParams, opts: BarChart
   createVisor(container, renderer, opts)
 }
 
-export default barChart
+export default BarChart
