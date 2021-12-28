@@ -1,4 +1,4 @@
-import createVisor, { ChartData, VisOptions } from '../core/createVisor'
+import createVisor, { ChartData, VisOptions } from '../core/visor'
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
 
@@ -14,17 +14,17 @@ type BarChartOpts = VisOptions & {
 const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChartOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
-      showXGrid = false,
-      showYGrid = false,
-      xGridColor = '#eee',
-      yGridColor = '#eee',
+      showXAxisGrid = false,
+      showYAxisGrid = false,
+      xAxisGridColor = '#eee',
+      yAxisGridColor = '#eee',
       yAccessor,
       xAccessor,
       color,
       horizontal = false,
       gap = 4,
-      noYDomain = false,
-      noXDomain = false,
+      noYAxisLine = false,
+      noXAxisLine = false,
     } = opts
 
     const xScale = !horizontal
@@ -52,14 +52,14 @@ const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChart
         .call(xAxisGenerator)
         .style('transform', `translateY(${dimensions.boundedHeight}px)`)
 
-      if (noXDomain) xAxis.call((g) => g.select('.domain').remove())
-      if (showXGrid) {
+      if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
+      if (showXAxisGrid) {
         const xGrid = bounds
           .append('g')
           .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
           .call((g) => g.select('.domain').remove())
           .call((g) => g.selectAll('.tick text').remove())
-          .call((g) => g.selectAll('.tick line').attr('stroke', xGridColor))
+          .call((g) => g.selectAll('.tick line').attr('stroke', xAxisGridColor))
       }
       if (opts.xLabel) {
         const xAxisLabel = xAxis
@@ -74,14 +74,14 @@ const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChart
       const yAxisGenerator = d3.axisLeft(yScale)
       const yAxis = bounds.append('g').call(yAxisGenerator)
 
-      if (noYDomain) yAxis.call((g) => g.select('.domain').remove())
-      if (showYGrid) {
+      if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
+      if (showYAxisGrid) {
         const yGrid = bounds
           .append('g')
           .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
           .call((g) => g.select('.domain').remove())
           .call((g) => g.selectAll('.tick text').remove())
-          .call((g) => g.selectAll('.tick line').attr('stroke', yGridColor))
+          .call((g) => g.selectAll('.tick:not(:first-child) line').attr('stroke', yAxisGridColor))
       }
       if (opts.yLabel) {
         const yAxisLabel = yAxis
@@ -107,8 +107,6 @@ const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChart
             return xs(xAccessor(d) as string) as unknown as string
           })
           .attr('y', function (d) {
-            console.log('ys(yAccessor(d))', d)
-
             return ys(yAccessor(d))
           })
           .attr('width', xs.bandwidth() - 2 * gap)

@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
-import createVisor, { VisOptions } from '../core/createVisor'
+import createVisor, { VisOptions } from '../core/visor'
 
 // Each slice's data struct
 type Datum = { key: string; value: number }

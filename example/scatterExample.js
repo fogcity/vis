@@ -1,12 +1,7 @@
 import { vis } from './build'
-console.log(
-  new Array(100).map((v) => ({
-    x: Math.ceil(Math.random() * 100),
-    y: Math.random() * 100,
-  })),
-)
-vis.render.scatterPlot(
-  document.getElementById('root'),
+
+vis.renderScatterPlot(
+  document.getElementById('root3'),
   {
     dataset: [...new Array(100)].map((v) => ({
       x: Math.max(Math.ceil(Math.random() * 100), 3),
@@ -14,15 +9,13 @@ vis.render.scatterPlot(
     })),
   },
   {
-    showXGrid: true,
-    showYGrid: true,
+    showXAxisGrid: true,
+    showYAxisGrid: true,
     color: '#386AB6',
     xAccessor: (d) => d.x,
     yAccessor: (d) => d.y,
     rAccessor: (d) => 3,
-    width: 800,
-    height: 400,
-    xLabel: 'Time',
-    yLabel: 'Question',
+
+    noXAxisTick: true,
   },
 )

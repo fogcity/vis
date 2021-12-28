@@ -1,4 +1,4 @@
-import { VisOptions } from '../core/createVisor'
+import { VisOptions } from '../core/visor'
 /**
  * HeatMap - vertical position of a square represents the day of the week (discrete) - horizontal position of a square represents the week of the year (discrete) - color of
  * a square represents a continuous or discrete metric value (often using a sequential

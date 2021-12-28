@@ -1,11 +1,14 @@
 import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
-import createVisor, { VisOptions } from '../core/createVisor'
+import createVisor, { VisOptions } from '../core/visor'
+type SeriesDataItem = {
+  [key: string]: number
+}
 
-type StackedBarChartOptions<T> = VisOptions & {
-  xAccessor: (d: T, i: number) => string
-  yAccessor: (d: T) => number
-  zAccessor: (d: T) => any
+type StackedBarChartOptions = VisOptions & {
+  xAccessor: (d: SeriesDataItem, i: number) => string
+  yAccessor: (d: SeriesDataItem) => number
+  zAccessor: (d: SeriesDataItem) => any
   normalized: boolean
   horizental: boolean
   diverging: boolean
@@ -15,84 +18,67 @@ type StackedBarChartOptions<T> = VisOptions & {
   yFormat: string
 }
 
-const StackedBarChart = <T>(container: HTMLElement, data: T[], options: StackedBarChartOptions<T>) => {
+const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options: StackedBarChartOptions) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
     const {
       showXAxisGrid = false,
       showYAxisGrid = false,
       xAxisGridColor = '#eee',
       yAxisGridColor = '#eee',
-      yAccessor,
       xAccessor,
-      zAccessor,
       colors,
       noYAxisLine = false,
       noXAxisLine = false,
-      xDomain: xDm,
-      yDomain: yDm,
-      zDomain: zDm,
+      xDomain = data.map(xAccessor),
+      zDomain = Object.keys(data[0]).slice(1),
       normalized = false,
       horizental = false,
       diverging = false,
       offset = d3.stackOffsetDiverging,
       order = d3.stackOrderNone,
       yFormat,
+      xPadding = 0.4,
       xType = d3.scaleBand,
       yType = d3.scaleLinear,
       zType = d3.scaleOrdinal,
       xRange = [0, dimensions.boundedWidth],
       yRange = [dimensions.boundedHeight, 0],
+      noXAxisTick,
+      noYAxisTick,
     } = options
     // 各自数据的数组
-    const X = d3.map(data, xAccessor)
-    const Y = d3.map(data, yAccessor)
-    const Z = d3.map(data, zAccessor)
 
-    let xDomain: any, yDomain: any, zDomain: any
-    if (xDm === undefined) xDomain = X
-    if (zDm === undefined) zDomain = Z
-    xDomain = new d3.InternSet(xDomain)
-    zDomain = new d3.InternSet(zDomain)
-    // Compute values.
+    const xScale = xType(xDomain, xRange).padding(xPadding)
+    const series = d3.stack().keys(zDomain).order(d3.stackOrderNone).offset(d3.stackOffsetNone)(data)
 
-    const xScale = xType(xDm, xRange)
-    const I = d3.range(xDomain.length).filter((i) => xDomain.has(xDomain[i]) && zDomain.has(zDomain[i]))
-    const series = d3
-      .stack()
-      .keys(zDomain)
-      .value(([x, I], z) => Y[I.get(z)])
-      .order(order)
-      .offset(offset)(
-        d3.rollup(
-          I,
-          ([i]) => i,
-          (i) => xDomain[i],
-          (i) => zDomain[i],
-        ),
-      )
-      .map((s: any) => s.map((d: any) => Object.assign(d, { i: d.data[1].get(s.key) })))
+    const yDomain = options.yDomain || [0, d3.max(series, (d) => d3.max(d, (d) => d[1]))]
 
-    if (yDm === undefined) yDomain = d3.extent(series.flat(2))
     const yScale = yType(yDomain, yRange).nice()
-    const colorScale = d3.scaleOrdinal(zDomain, colors)
-    // Draw bottom axis
-    const xAxisGenerator = d3.axisBottom(xScale)
+    const colorScale = zType(zDomain, colors)
 
+    // Draw bottom axis
+
+    if (showXAxisGrid) {
+      const xGrid = bounds
+        .append('g')
+        .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight + 2))
+        .call((g) => g.select('.domain').remove())
+        .call((g) => g.selectAll('.tick text').remove())
+        .call((g) => g.selectAll('.tick line').attr('stroke', xAxisGridColor))
+    }
+    const xAxisGenerator = d3.axisBottom(xScale)
     const xAxis = bounds
       .append('g')
       .call(xAxisGenerator)
       .style('transform', `translateY(${dimensions.boundedHeight}px)`)
 
-    if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
-    if (showXAxisGrid) {
-      const xGrid = bounds
-        .append('g')
-        .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
-        // .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xGridColor))
-    }
+    if (noXAxisTick) xAxis.call((g) => g.selectAll('.tick line').remove())
+    if (noXAxisLine)
+      xAxis.call((g) => {
+        console.log("g.select('.domain')", g.select('.domain'))
+
+        g.select('.domain').remove()
+      })
     if (options.xLabel) {
       const xAxisLabel = xAxis
         .append('text')
@@ -102,19 +88,22 @@ const StackedBarChart = <T>(container: HTMLElement, data: T[], options: StackedB
         .style('font-size', options?.fontSize || '1.4em')
         .html(options.xLabel)
     }
-    // Draw left axis
-    const yAxisGenerator = d3.axisLeft(yScale)
-    const yAxis = bounds.append('g').call(yAxisGenerator)
+    //Draw left axis
 
-    if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
     if (showYAxisGrid) {
       const yGrid = bounds
         .append('g')
         .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
         .call((g) => g.select('.domain').remove())
         .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yGridColor))
+        .call((g) =>
+          g.selectAll(`.tick${!noXAxisLine ? ':not(:first-of-type)' : ''} line`).attr('stroke', yAxisGridColor),
+        )
     }
+    const yAxisGenerator = d3.axisLeft(yScale)
+    const yAxis = bounds.append('g').call(yAxisGenerator)
+    if (noYAxisTick) yAxis.call((g) => g.selectAll('.tick line').remove())
+    if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
     if (options.yLabel) {
       const yAxisLabel = yAxis
         .append('text')
@@ -127,18 +116,37 @@ const StackedBarChart = <T>(container: HTMLElement, data: T[], options: StackedB
         .style('text-anchor', 'middle')
     }
 
-    const bar = bounds
-      .selectAll('g')
-      .data(series)
-      .join('g')
-      .attr('fill', ([{ i }]) => colorScale(zDomain[i]))
-      .selectAll('rect')
-      .data((d) => d)
-      .join('rect')
-      .attr('x', ({ i }) => xScale(X[i]))
-      .attr('y', ([y1, y2]) => Math.min(yScale(y1), yScale(y2)))
-      .attr('height', ([y1, y2]) => Math.abs(yScale(y1) - yScale(y2)))
+    const bar = bounds.selectAll('.bargroup').data(series)
+
+    const mergedBar = bar
+      .enter()
+      .append('g')
+      .merge(bar as any)
+      .classed('bargroup', true)
+      .attr('fill', function (d) {
+        return colorScale(d.key)
+      })
+
+    const bars = mergedBar.selectAll('rect').data(function (d) {
+      return d
+    })
+
+    const rect = bars
+      .enter()
+      .append('rect')
+      .merge(bars as any)
+      .attr('x', function (d) {
+        return xScale(d.data.group)
+      })
+      .attr('y', function (d) {
+        return yScale(d[1])
+      })
+      .attr('height', function (d) {
+        return yScale(d[0]) - yScale(d[1])
+      })
       .attr('width', xScale.bandwidth())
+
+    rect.exit().remove()
   }
 
   createVisor(container, renderer, options)

@@ -8,29 +8,29 @@
 //   xAccessor: (d: any) => Date
 //   lineWidth: number
 //   colors: string[]
-//   noYDomain: boolean
-//   noXDomain: boolean
-//   showXGrid: boolean
-//   showYGrid: boolean
-//   yGridColor: string
-//   xGridColor: string
+//   noYAxisLine: boolean
+//   noXAxisLine: boolean
+//   showXAxisGrid: boolean
+//   showYAxisGrid: boolean
+//   yAxisGridColor: string
+//   xAxisGridColor: string
 //   curve: d3.CurveFactoryLineOnly | d3.CurveFactory
 // }
 // const StackedAreaChart = (container: HTMLElement, params: StackedAreaChartParams, opts: StackedAreaChartOpts) => {
 //   const { dataset, time, series } = params
 //   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
 //     const {
-//       showXGrid = false,
-//       showYGrid = false,
-//       xGridColor = '#eee',
-//       yGridColor = '#eee',
+//       showXAxisGrid = false,
+//       showYAxisGrid = false,
+//       xAxisGridColor = '#eee',
+//       yAxisGridColor = '#eee',
 //       yAccessor = (d: any) => d.time,
 //       xAccessor = (d: any) => d.time,
 //       lineWidth = 2,
 //       curve = d3.curveLinear,
 //       colors,
-//       noYDomain = false,
-//       noXDomain = false,
+//       noYAxisLine = false,
+//       noXAxisLine = false,
 //     } = opts
 
 //     const xScale = d3
@@ -82,15 +82,15 @@
 //       .call(xAxisGenerator)
 //       .style('transform', `translateY(${dimensions.boundedHeight}px)`)
 
-//     if (noXDomain) xAxis.call((g) => g.select('.domain').remove())
-//     if (showXGrid) {
+//     if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
+//     if (showXAxisGrid) {
 //       const xGrid = bounds
 //         .append('g')
 //         .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
 //         // .style('transform', `translateY(${dimensions.boundedHeight}px)`)
 //         .call((g) => g.select('.domain').remove())
 //         .call((g) => g.selectAll('.tick text').remove())
-//         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xGridColor))
+//         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xAxisGridColor))
 //     }
 //     if (opts.xLabel) {
 //       const xAxisLabel = xAxis
@@ -105,14 +105,14 @@
 //     const yAxisGenerator = d3.axisLeft(yScale)
 //     const yAxis = bounds.append('g').call(yAxisGenerator)
 
-//     if (noYDomain) yAxis.call((g) => g.select('.domain').remove())
-//     if (showYGrid) {
+//     if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
+//     if (showYAxisGrid) {
 //       const yGrid = bounds
 //         .append('g')
 //         .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
 //         .call((g) => g.select('.domain').remove())
 //         .call((g) => g.selectAll('.tick text').remove())
-//         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yGridColor))
+//         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yAxisGridColor))
 //     }
 //     if (opts.yLabel) {
 //       const yAxisLabel = yAxis
