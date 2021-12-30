@@ -1,4 +1,4 @@
-import { vis } from './build'
+import { vis } from '../build'
 const dataset = [...new Array(10)].map((v, i) => ({ key: i + 's', value: Math.random() * 100 }))
 
 vis.renderBarChart(
@@ -9,7 +9,7 @@ vis.renderBarChart(
   {
     showYAxisGrid: true,
     horizontal: false,
-    color: '#386AB6',
+    color: '#781D42',
     xAccessor: (d) => d.key,
     yAccessor: (d) => d.value,
   },

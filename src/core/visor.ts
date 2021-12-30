@@ -45,31 +45,33 @@ const createVisor = (
     let ct
     if (typeof container == 'string') {
       ct = document.getElementById(container)
+    } else ct = container as HTMLElement
+
+    if (ct) {
+      const dimensions = combineDimensions({
+        ...{ width: ct.clientWidth, height: ct.clientHeight },
+        ...opts,
+      })
+
+      const wrapper = d3.select(ct)
+      wrapper.selectAll('*').remove()
+
+      // Adding an SVG element
+      const svg = wrapper.append('svg')
+
+      // Creating our bounding box - Visor
+      const visor = svg.append('g')
+
+      svg
+        // .transition()
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+      visor
+        .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
+        .attr('width', dimensions.boundedWidth)
+        .attr('height', dimensions.boundedHeight)
+      renderer?.(visor, dimensions)
     }
-    ct = ct as HTMLElement
-    const dimensions = combineDimensions({
-      ...{ width: ct.clientWidth, height: ct.clientHeight },
-      ...opts,
-    })
-
-    const wrapper = d3.select(ct)
-    wrapper.selectAll('*').remove()
-
-    // Adding an SVG element
-    const svg = wrapper.append('svg')
-
-    // Creating our bounding box - Visor
-    const visor = svg.append('g')
-
-    svg
-      // .transition()
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
-    visor
-      .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
-      .attr('width', dimensions.boundedWidth)
-      .attr('height', dimensions.boundedHeight)
-    renderer?.(visor, dimensions)
   })
 
   render()

@@ -46,7 +46,6 @@ const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options
       noXAxisTick,
       noYAxisTick,
     } = options
-    // 各自数据的数组
 
     const xScale = xType(xDomain, xRange).padding(xPadding)
     const series = d3.stack().keys(zDomain).order(d3.stackOrderNone).offset(d3.stackOffsetNone)(data)
@@ -131,6 +130,7 @@ const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options
       return d
     })
 
+    // if()
     const rect = bars
       .enter()
       .append('rect')
@@ -138,13 +138,28 @@ const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options
       .attr('x', function (d) {
         return xScale(d.data.group)
       })
-      .attr('y', function (d) {
-        return yScale(d[1])
+      .attr('y', function ([y1, y2]) {
+        return Math.min(yScale(y1), yScale(y2))
       })
-      .attr('height', function (d) {
-        return yScale(d[0]) - yScale(d[1])
+      .attr('height', function ([y1, y2]) {
+        return Math.abs(yScale(y1) - yScale(y2))
       })
       .attr('width', xScale.bandwidth())
+
+    // const rect = bars
+    // .enter()
+    // .append('rect')
+    // .merge(bars as any)
+    // .attr('x', function (d) {
+    //   return xScale(d.data.group)
+    // })
+    // .attr('y', function (d) {
+    //   return yScale(d[1])
+    // })
+    // .attr('width', function ([x1,x2]) {
+    //   return  Math.abs(xScale(x1) - xScale(x2))
+    // })
+    // .attr('height', yScale.bandwidth())
 
     rect.exit().remove()
   }

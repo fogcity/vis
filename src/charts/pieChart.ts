@@ -3,25 +3,24 @@ import { Dimensions } from '../core/dimensions'
 import createVisor, { VisOptions } from '../core/visor'
 
 // Each slice's data struct
-type Datum = { key: string; value: number }
+type PieChartItem = { key: string; value: number }
 
 // All params and visor settings
-type pieChartParams = {
+
+type pieChartOpts = VisOptions & {
   padAngle: number // Spacing angle between each block
   innerRadius: number // Inner ring radius
   radius: number
   colors: string[]
-  dataset: Datum[]
 }
-type pieChartOpts = VisOptions & {}
 
 /**
  * Pie Chart - angle of a slice represents a continuous or discrete metric
  * @param container
  * @param params
- * @param opts
+ * @param options
  */
-const pieChart = (container: HTMLElement, params: pieChartParams, opts: pieChartOpts) => {
+const pieChart = (container: HTMLElement, data: PieChartItem[], options: pieChartOpts) => {
   /**
    *
    * A few tips for making effective pie charts:
@@ -32,26 +31,26 @@ const pieChart = (container: HTMLElement, params: pieChartParams, opts: pieChart
    *  3. Label each slice directly.
    */
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
-    const { padAngle, radius = 40, innerRadius = radius * 0.7, colors, dataset } = params
+    const { padAngle, radius = 40, innerRadius = radius * 0.7, colors } = options
 
     const combinedDataset =
-      dataset.length > 5
+      data.length > 5
         ? [
-            ...dataset.slice(0, 4),
+            ...data.slice(0, 4),
             {
               key: 'other',
-              value: dataset.slice(4).reduce((a, v, i) => {
+              value: data.slice(4).reduce((a, v, i) => {
                 a += v.value
                 return a
               }, 0),
             },
           ]
-        : dataset
+        : data
 
     // Draw data
     const drawPie = () => {
       const arcGenerator = d3
-        .pie<Datum>()
+        .pie<PieChartItem>()
         .sort((a, b) => a.value - b.value)
         .padAngle(padAngle)
         .value((d) => d.value)
@@ -68,7 +67,7 @@ const pieChart = (container: HTMLElement, params: pieChartParams, opts: pieChart
         .innerRadius(Math.min(radius, innerRadius)) // set to 0 for a pie chart
         .outerRadius(radius)
 
-      bounds.style('transform', `translate(${dimensions.boundedWidth / 2}px,${dimensions.boundedHeight / 2}px)`)
+      bounds.style('transform', `translate(50%,50%)`)
 
       bounds
         .selectAll('path')
@@ -84,6 +83,6 @@ const pieChart = (container: HTMLElement, params: pieChartParams, opts: pieChart
     drawPie()
   }
 
-  createVisor(container, renderer, opts)
+  createVisor(container, renderer, options)
 }
 export default pieChart

@@ -1,4 +1,4 @@
-import { vis } from './build'
+import { vis } from '../build'
 
 vis.renderScatterPlot(
   document.getElementById('root3'),
@@ -11,7 +11,7 @@ vis.renderScatterPlot(
   {
     showXAxisGrid: true,
     showYAxisGrid: true,
-    color: '#386AB6',
+    color: '#781D42',
     xAccessor: (d) => d.x,
     yAccessor: (d) => d.y,
     rAccessor: (d) => 3,
