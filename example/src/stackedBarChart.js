@@ -1,4 +1,4 @@
-import { vis } from './build'
+import { vis } from '../build'
 import * as d3 from 'd3'
 d3.csv('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv').then((d) => {
   vis.renderStackedBarChart('root', d, {

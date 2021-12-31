@@ -11,6 +11,7 @@
 //   horizontal: boolean
 //   gap: number
 // }
+
 // const GroupedBarChart = (container: HTMLElement, params: GroupedBarChartParams, opts: GroupedBarChartOpts) => {
 //   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
 //     const {

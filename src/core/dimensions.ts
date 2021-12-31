@@ -8,6 +8,7 @@ export type Dimensions = {
   boundedHeight: number
   boundedWidth: number
 }
+
 export const combineDimensions = (dim: Dimensions) => {
   const defaultDim = {
     marginTop: 20,
