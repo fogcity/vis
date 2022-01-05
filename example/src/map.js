@@ -1,3 +1,3 @@
 import { vis } from '../build'
 
-vis.renderMap('root7')
+vis.renderMap('root8')

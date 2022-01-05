@@ -7,8 +7,10 @@ vis.renderBarChart(
     dataset,
   },
   {
-    showYAxisGrid: true,
-    horizontal: false,
+    noXAxisLine: true,
+    noYAxisLine: true,
+    showXAxisGrid: true,
+    horizontal: true,
     color: '#781D42',
     xAccessor: (d) => d.key,
     yAccessor: (d) => d.value,
