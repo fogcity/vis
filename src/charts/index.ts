@@ -6,5 +6,5 @@ import PieChart from './PieChart'
 import ScatterPlot from './ScatterPlot'
 import HeatMap from './HeatMap'
 import Tree from './Tree'
-import Area from './AreaChart'
-export { HeatMap, Area, Tree, StackedBarChart, PieChart, BarChart, ScatterPlot, LineChart }
+import AreaChart from './AreaChart'
+export { HeatMap, AreaChart, Tree, StackedBarChart, PieChart, BarChart, ScatterPlot, LineChart }

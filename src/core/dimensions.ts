@@ -13,14 +13,15 @@ export const combineDimensions = (dim: Dimensions) => {
   const defaultDim = {
     marginTop: 20,
     marginRight: 20,
-    marginBottom: 60,
-    marginLeft: 60,
+    marginBottom: 20,
+    marginLeft: 20,
   }
 
   const mergedDim = {
     ...defaultDim,
     ...dim,
   }
+  console.log('mergedDim', mergedDim)
 
   return {
     ...mergedDim,

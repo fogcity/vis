@@ -5,7 +5,7 @@
   "main": "example/build/index.js",
   "module": "example/build/index.js",
   "files": [
-    "build"
+    "example/build"
   ],
   "typings": "example/build/index.d.ts",
   "scripts": {
@@ -33,7 +33,7 @@
   },
   "size-limit": [
     {
-      "path": "dist/index.js",
+      "path": "example/build/index.js",
       "limit": "15 KB"
     }
   ],

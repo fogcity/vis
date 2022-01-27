@@ -2,7 +2,6 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "declaration": true,
-    "declarationDir": "dist",
     "module": "esnext",
     "strict": true,
     "target": "es2015",

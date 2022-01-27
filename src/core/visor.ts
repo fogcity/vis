@@ -22,6 +22,12 @@ export type VisOptions = {
   xRange: []
   yRange: []
   xPadding: number
+  noYAxis?: boolean
+  noXAxis?: boolean
+  xAxisOffset?: number
+  yAxisOffset?: number
+  yTicks?: number
+  xTicks?: number
 } & Dimensions
 
 export type ChartData = { values: { index: number; value: number }[]; series: any[] }
@@ -58,6 +64,7 @@ const createVisor = (
 
       // Adding an SVG element
       const svg = wrapper.append('svg')
+      console.log(svg)
 
       // Creating our bounding box - Visor
       const visor = svg.append('g')
@@ -70,6 +77,9 @@ const createVisor = (
         .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
         .attr('width', dimensions.boundedWidth)
         .attr('height', dimensions.boundedHeight)
+
+      console.log(dimensions)
+
       renderer?.(visor, dimensions)
     }
   })

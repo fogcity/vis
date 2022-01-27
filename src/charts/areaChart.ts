@@ -2,11 +2,11 @@ import * as d3 from 'd3'
 import { Dimensions } from '../core/dimensions'
 import createVisor, { VisOptions } from '../core/visor'
 
-type areaPoint = [number, number]
-type AreaChartParams = { dataset: areaPoint[]; series: any[] }
+export type AreaPoint = [number, number]
+type AreaChartParams = { dataset: AreaPoint[]; series?: any[] }
 type AreaChartOpts = VisOptions & {
-  yAccessor: (d: areaPoint) => number
-  xAccessor: (d: areaPoint) => number
+  yAccessor: (d: AreaPoint) => number
+  xAccessor: (d: AreaPoint) => number
   color: string
   curve: d3.CurveFactory
 }
@@ -19,17 +19,25 @@ const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaCh
       yAxisGridColor = '#eee',
       yAccessor,
       xAccessor,
-      curve,
+      curve = d3.curveLinear,
       color,
       noYAxisLine = false,
       noXAxisLine = false,
+      noXAxisTick = false,
+      noYAxisTick = false,
+      noXAxis = false,
+      noYAxis = false,
+      xAxisOffset = 0,
+      yAxisOffset = 0,
+      yTicks,
+      xTicks,
     } = opts
 
     const xScale = d3
       .scaleLinear()
+
       .domain(d3.extent(params.dataset, xAccessor) as number[])
       .range([0, dimensions.boundedWidth])
-      .nice()
 
     const yScale = d3
       .scaleLinear()
@@ -38,7 +46,7 @@ const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaCh
       .nice()
 
     // Draw data
-    const drawLines = (dataset: areaPoint[], color: string) => {
+    const drawLines = (dataset: AreaPoint[], color: string) => {
       const areaGenerator = d3
         .area()
         .x((d) => xScale(xAccessor(d)))
@@ -53,57 +61,62 @@ const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaCh
         .attr('d', areaGenerator(dataset))
         .attr('fill', (d) => color)
     }
-
-    // Draw bottom axis
-    const xAxisGenerator = d3.axisBottom(xScale)
-
-    const xAxis = bounds
-      .append('g')
-      .call(xAxisGenerator)
-      .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-
-    if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
-    if (showXAxisGrid) {
-      const xGrid = bounds
+    if (!noXAxis) {
+      const xAxisGenerator = d3.axisBottom(xScale).ticks(xTicks)
+      const xAxis = bounds
         .append('g')
-        .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
-        // .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xAxisGridColor))
-    }
-    if (opts.xLabel) {
-      const xAxisLabel = xAxis
-        .append('text')
-        .attr('x', dimensions.boundedWidth / 2)
-        .attr('y', (dimensions.marginBottom / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .html(opts.xLabel)
-    }
-    // Draw left axis
-    const yAxisGenerator = d3.axisLeft(yScale)
-    const yAxis = bounds.append('g').call(yAxisGenerator)
+        .call(xAxisGenerator)
 
-    if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
-    if (showYAxisGrid) {
-      const yGrid = bounds
-        .append('g')
-        .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yAxisGridColor))
+        .style('transform', `translateY(${dimensions.boundedHeight + xAxisOffset}px)`)
+
+      if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
+      if (noXAxisTick) xAxis.call((g) => g.selectAll('.tick line').remove())
+      if (showXAxisGrid) {
+        const xGrid = bounds
+          .append('g')
+          .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
+
+          .call((g) => g.select('.domain').remove())
+          .call((g) => g.selectAll('.tick text').remove())
+          .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xAxisGridColor))
+      }
+
+      if (opts.xLabel) {
+        const xAxisLabel = xAxis
+          .append('text')
+          .attr('x', dimensions.boundedWidth / 2)
+          .attr('y', (dimensions.marginBottom / 3) * 2)
+          .attr('fill', 'black')
+          .style('font-size', opts?.fontSize || '1.4em')
+          .html(opts.xLabel)
+      }
     }
-    if (opts.yLabel) {
-      const yAxisLabel = yAxis
-        .append('text')
-        .attr('x', -dimensions.boundedHeight / 2)
-        .attr('y', (-dimensions.marginLeft / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .text(opts.yLabel)
-        .style('transform', 'rotate(-90deg)')
-        .style('text-anchor', 'middle')
+
+    if (!noYAxis) {
+      const yAxisGenerator = d3.axisLeft(yScale).ticks(yTicks)
+      const yAxis = bounds.append('g').call(yAxisGenerator)
+      if (noYAxisTick) yAxis.call((g) => g.selectAll('.tick line').remove())
+      if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
+      if (showYAxisGrid) {
+        const yGrid = bounds
+          .append('g')
+          .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
+          .style('transform', `translateX(${yAxisOffset})`)
+          .call((g) => g.select('.domain').remove())
+          .call((g) => g.selectAll('.tick text').remove())
+          .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yAxisGridColor))
+      }
+      if (opts.yLabel) {
+        const yAxisLabel = yAxis
+          .append('text')
+          .attr('x', -dimensions.boundedHeight / 2)
+          .attr('y', (-dimensions.marginLeft / 3) * 2)
+          .attr('fill', 'black')
+          .style('font-size', opts?.fontSize || '1.4em')
+          .text(opts.yLabel)
+          .style('transform', 'rotate(-90deg)')
+          .style('text-anchor', 'middle')
+      }
     }
 
     drawLines(params.dataset, color)
