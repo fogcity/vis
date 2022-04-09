@@ -14,13 +14,19 @@ export default {
       format: 'es',
       sourcemap: process.env.NODE_ENV == 'development',
     },
+    {
+      name: 'vis',
+      globals: 'vis',
+      file: packageJson.main,
+      format: 'umd',
+      sourcemap: process.env.NODE_ENV == 'development',
+    },
   ],
   plugins: [
     peerDepsExternal(),
     filesize(),
     resolve(),
     commonjs(),
-
     typescript({ tsconfig: 'tsconfig.json' }),
     process.env.NODE_ENV == 'production' && terser(),
   ],

@@ -21,7 +21,6 @@ export const combineDimensions = (dim: Dimensions) => {
     ...defaultDim,
     ...dim,
   }
-  console.log('mergedDim', mergedDim)
 
   return {
     ...mergedDim,
