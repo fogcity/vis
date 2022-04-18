@@ -36,12 +36,10 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
       paddingInnerX = 0,
       paddingInnerY = 0,
     } = options
-    console.log('new Set(xDomain)', xDomain)
 
     const xScale = xType(new Set(xDomain), xRange).paddingInner(paddingInnerX)
     const yScale = yType(new Set(yDomain), yRange).paddingInner(paddingInnerY)
     const colorScale = zType(d3.extent(zDomain), [startColor, endColor])
-    console.log('d3.extent(zDomain)', d3.extent(zDomain))
 
     // Draw bottom axis
 
@@ -54,8 +52,6 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
     if (noXAxisTick) xAxis.call((g) => g.selectAll('.tick line').remove())
     if (noXAxisLine)
       xAxis.call((g) => {
-        console.log("g.select('.domain')", g.select('.domain'))
-
         g.select('.domain').remove()
       })
 

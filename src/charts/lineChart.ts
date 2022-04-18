@@ -25,21 +25,21 @@ const LineChart = (container: HTMLElement, params: lineChartParams, opts: lineCh
       color,
       noYAxisLine = false,
       noXAxisLine = false,
+      xDomain,
+      yDomain,
     } = opts
 
     const xScale = d3
       .scaleLinear()
-      .domain(d3.extent(params.dataset, xAccessor) as number[])
+      .domain(xDomain || (d3.extent(params.dataset, xAccessor) as number[]))
       .range([0, dimensions.boundedWidth])
       .nice()
 
     const yScale = d3
       .scaleLinear()
-      .domain(d3.extent(params.dataset, yAccessor) as number[])
+      .domain(yDomain || (d3.extent(params.dataset, yAccessor) as number[]))
       .range([dimensions.boundedHeight, 0])
       .nice()
-
-    console.log('yScale', yScale)
 
     // Draw data
     const drawLines = (dataset: linePoint[], color: string) => {

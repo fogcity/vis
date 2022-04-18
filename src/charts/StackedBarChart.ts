@@ -74,8 +74,6 @@ const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options
     if (noXAxisTick) xAxis.call((g) => g.selectAll('.tick line').remove())
     if (noXAxisLine)
       xAxis.call((g) => {
-        console.log("g.select('.domain')", g.select('.domain'))
-
         g.select('.domain').remove()
       })
     if (options.xLabel) {

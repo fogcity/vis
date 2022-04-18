@@ -1,13 +1,13 @@
 import * as d3 from 'd3'
 import { combineDimensions, Dimensions } from './dimensions'
 export type VisOptions = {
-  color: string | string[] // Fill color for bars. Should be a valid CSS color string
+  color?: string | string[] // Fill color for bars. Should be a valid CSS color string
   xLabel?: string // Label for xAxis
   yLabel?: string // Label for yAxis
   fontSize?: string
-  xDomain?: []
-  yDomain?: []
-  zDomain?: []
+  xDomain?: any[]
+  yDomain?: any[]
+  zDomain?: any[]
   noYAxisLine?: boolean
   noXAxisLine?: boolean
   noYAxisTick?: boolean
@@ -16,12 +16,12 @@ export type VisOptions = {
   showYAxisGrid?: boolean
   yAxisGridColor?: string
   xAxisGridColor?: string
-  xType: Function
-  yType: Function
-  zType: Function
-  xRange: []
-  yRange: []
-  xPadding: number
+  xType?: Function
+  yType?: Function
+  zType?: Function
+  xRange?: any[]
+  yRange?: any[]
+  xPadding?: number
   noYAxis?: boolean
   noXAxis?: boolean
   xAxisOffset?: number
@@ -30,7 +30,7 @@ export type VisOptions = {
   xTicks?: number
 } & Dimensions
 
-export type ChartData = { values: { index: number; value: number }[]; series: any[] }
+export type ChartData = { values: { index: number; value: number }[]; series?: any[] }
 
 const debounce = (fn: Function, delay: number = 500): Function => {
   let timer: any
@@ -64,7 +64,6 @@ const createVisor = (
 
       // Adding an SVG element
       const svg = wrapper.append('svg')
-      console.log(svg)
 
       // Creating our bounding box - Visor
       const visor = svg.append('g')
@@ -77,8 +76,6 @@ const createVisor = (
         .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
         .attr('width', dimensions.boundedWidth)
         .attr('height', dimensions.boundedHeight)
-
-      console.log(dimensions)
 
       renderer?.(visor, dimensions)
     }
