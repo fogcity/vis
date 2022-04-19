@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { combineDimensions, Dimensions } from './dimensions'
+import { Layer } from './layer'
 export type VisOptions = {
   color?: string | string[] // Fill color for bars. Should be a valid CSS color string
   xLabel?: string // Label for xAxis
@@ -42,6 +43,63 @@ const debounce = (fn: Function, delay: number = 500): Function => {
   }
 }
 
+export class Visor {
+  wrapper!: d3.Selection<HTMLElement, unknown, null, undefined>
+  bound!: d3.Selection<SVGGElement, unknown, null, undefined>
+  dimensions!: Dimensions
+
+  constructor(container: HTMLElement | string, public options: Dimensions, resize: boolean = true) {
+    // Init the container element
+    const render = debounce(() => {
+      let e
+      if (typeof container == 'string') {
+        e = document.getElementById(container)
+      } else e = container as HTMLElement
+
+      if (e) {
+        this.dimensions = combineDimensions({
+          ...{ width: e.clientWidth, height: e.clientHeight },
+          ...options,
+        })
+        const { width, height, marginLeft, marginTop, boundedHeight, boundedWidth } = this.dimensions
+        // Select the container element
+        this.wrapper = d3.select(e)
+        this.clear()
+
+        // Adding an SVG element
+        const svg = this.wrapper.append('svg')
+
+        // Creating our bounding box - Visor
+        this.bound = svg.append('g')
+
+        svg
+          // .transition()
+          .attr('width', width)
+          .attr('height', height)
+
+        this.bound
+          .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
+          .attr('width', boundedWidth)
+          .attr('height', boundedHeight)
+      } else throw new Error('Ensure the provided element exist!')
+    })
+    render()
+    if (resize)
+      window.addEventListener('resize', () => {
+        render()
+      })
+  }
+
+  add(layer: Layer) {
+    layer.render(this.bound, this.dimensions)
+  }
+
+  clear() {
+    if (this.wrapper) this.wrapper.selectAll('*').remove()
+  }
+}
+
+// const v = new Visor('root', {})
 const createVisor = (
   container: HTMLElement | string,
   renderer: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => void,
