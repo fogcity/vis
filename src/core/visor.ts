@@ -47,23 +47,23 @@ export class Visor {
   wrapper!: d3.Selection<HTMLElement, unknown, null, undefined>
   bound!: d3.Selection<SVGGElement, unknown, null, undefined>
   dimensions!: Dimensions
-
+  layers: Layer[] = []
   constructor(container: HTMLElement | string, public options: Dimensions, resize: boolean = true) {
     // Init the container element
     const render = debounce(() => {
-      let e
+      let targetElement
       if (typeof container == 'string') {
-        e = document.getElementById(container)
-      } else e = container as HTMLElement
+        targetElement = document.getElementById(container)
+      } else targetElement = container as HTMLElement
 
-      if (e) {
+      if (targetElement) {
         this.dimensions = combineDimensions({
-          ...{ width: e.clientWidth, height: e.clientHeight },
+          ...{ width: targetElement.clientWidth, height: targetElement.clientHeight },
           ...options,
         })
         const { width, height, marginLeft, marginTop, boundedHeight, boundedWidth } = this.dimensions
         // Select the container element
-        this.wrapper = d3.select(e)
+        this.wrapper = d3.select(targetElement)
         this.clear()
 
         // Adding an SVG element
@@ -72,10 +72,7 @@ export class Visor {
         // Creating our bounding box - Visor
         this.bound = svg.append('g')
 
-        svg
-          // .transition()
-          .attr('width', width)
-          .attr('height', height)
+        svg.attr('width', width).attr('height', height)
 
         this.bound
           .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
@@ -83,6 +80,8 @@ export class Visor {
           .attr('height', boundedHeight)
       } else throw new Error('Ensure the provided element exist!')
     })
+
+    // Render our bounding box and rerender with the window resize
     render()
     if (resize)
       window.addEventListener('resize', () => {
@@ -91,7 +90,16 @@ export class Visor {
   }
 
   add(layer: Layer) {
-    layer.render(this.bound, this.dimensions)
+    this.layers.push(layer)
+  }
+
+  render() {
+    if (this.layers.length >= 0) {
+      this.clear()
+      for (const preparedLayer of this.layers) {
+        preparedLayer.render(this.bound, this.dimensions)
+      }
+    }
   }
 
   clear() {

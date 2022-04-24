@@ -1,3 +1,4 @@
+import { vis } from '..'
 import { Dimensions } from './dimensions'
 
 export abstract class Layer {

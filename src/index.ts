@@ -5,7 +5,6 @@ import { HeatMap, AreaChart, Tree, StackedBarChart, PieChart, ScatterPlot, LineC
 
 const vis = {
   renderHeatMap: HeatMap,
-
   renderScatterPlot: ScatterPlot,
   renderLineChart: LineChart,
   renderBarChart: BarChart,
