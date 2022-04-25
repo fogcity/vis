@@ -11,10 +11,10 @@ export type Dimensions = {
 
 export const combineDimensions = (dim: Dimensions) => {
   const defaultDim = {
-    marginTop: 20,
+    marginTop: 50,
     marginRight: 50,
     marginBottom: 50,
-    marginLeft: 20,
+    marginLeft: 50,
   }
 
   const mergedDim = {

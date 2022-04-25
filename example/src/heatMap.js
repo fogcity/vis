@@ -1,11 +1,11 @@
 import { vis } from '../build'
-const x = [...new Array(70)].map((v, i) => i)
-const y = [...new Array(20)].map((v, i) => i)
+const x = [...new Array(5)].map((v, i) => i)
+const y = [...new Array(5)].map((v, i) => i)
 
-const dataset = [...new Array(1000)].map((v, i) => ({
-  x: x[Math.floor(Math.random() * 70)],
-  y: y[Math.floor(Math.random() * 20)],
-  value: Math.max(Math.random() * 400, 1),
+const dataset = [...new Array(25)].map((v, i) => ({
+  x: x[Math.floor(Math.random() * 5)],
+  y: y[Math.floor(Math.random() * 5)],
+  value: Math.max(Math.random() * 10, 1),
 }))
 
 vis.renderHeatMap(document.getElementById('root6'), dataset, {

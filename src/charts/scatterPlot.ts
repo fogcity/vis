@@ -9,6 +9,7 @@ type ScatterPlotOpts = VisOptions & {
   xAccessor: (d: ScatterPoint) => number
   rAccessor: (d: ScatterPoint) => number
   color: string
+  hollow: boolean
 }
 const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
@@ -17,6 +18,7 @@ const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: Sc
       showYAxisGrid = false,
       xAxisGridColor = '#eee',
       yAxisGridColor = '#eee',
+      hollow = false,
       yAccessor,
       xAccessor,
       rAccessor,
@@ -40,12 +42,17 @@ const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: Sc
     // Draw data
     const drawDots = (dataset: any[], color: string) => {
       const dots = bounds.selectAll('circle').data(dataset)
-      dots
+      const positionedDots = dots
         .join('circle')
         .attr('cx', (d) => xScale(xAccessor(d)))
         .attr('cy', (d) => yScale(yAccessor(d)))
         .attr('r', (d) => rAccessor(d))
-        .attr('fill', color)
+
+      if (!hollow) {
+        positionedDots.attr('fill', color)
+      } else {
+        positionedDots.attr('fill', 'transparent').attr('stroke', color)
+      }
     }
 
     // Draw bottom axis

@@ -32,4 +32,4 @@ const dataset = {
     },
   ],
 }
-vis.renderTree('root9', dataset, {})
+vis.renderTree('root8', dataset, {})

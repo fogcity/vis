@@ -1,5 +1,5 @@
 import { vis } from '../build'
-const dataset = [...new Array(10)].map((v, i) => ({ key: i + 's', value: Math.random() * 100 }))
+const dataset = [...new Array(10)].map((v, i) => ({ key: i, value: Math.random() * 100 }))
 
 vis.renderBarChart(
   document.getElementById('root4'),
