@@ -46,7 +46,7 @@ const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaCh
       .nice()
 
     // Draw data
-    const drawLines = (dataset: AreaPoint[], color: string) => {
+    const renderLines = (dataset: AreaPoint[], color: string) => {
       const areaGenerator = d3
         .area()
         .x((d) => xScale(xAccessor(d)))
@@ -119,7 +119,7 @@ const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaCh
       }
     }
 
-    drawLines(params.dataset, color)
+    renderLines(params.dataset, color)
   }
 
   createVisor(container, renderer, opts)

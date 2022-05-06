@@ -1,8 +1,8 @@
 import * as d3 from 'd3'
 import { renderAxis } from '../core/axis'
 import { Dimensions } from '../core/dimensions'
-import { drawLines } from '../core/line'
-import createVisor, { VisOptions } from '../core/visor'
+import { renderLines } from '../core/line'
+import createVisor, { buildVisor, VisOptions } from '../core/visor'
 
 type linePoint = [number, number]
 type lineChartParams = { dataset: linePoint[]; series: any[] }
@@ -14,23 +14,9 @@ type lineChartOpts = VisOptions & {
   curve: d3.CurveFactoryLineOnly | d3.CurveFactory
 }
 const LineChart = (container: HTMLElement, params: lineChartParams, opts: lineChartOpts) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
-    const {
-      showXAxisGrid = false,
-      showYAxisGrid = false,
-      xAxisGridColor = '#eee',
-      yAxisGridColor = '#eee',
-      yAccessor,
-      xAccessor,
-      lineWidth = 2,
-      curve = d3.curveLinear,
-      color,
-      noYAxisLine = false,
-      noXAxisLine = false,
-      xDomain,
-      yDomain,
-    } = opts
-
+  const { visor, dimensions } = buildVisor(container)
+  if (visor && dimensions) {
+    const { yAccessor, xAccessor, color, xDomain, yDomain } = opts
     const xScale = d3
       .scaleLinear()
       .domain(xDomain || (d3.extent(params.dataset, xAccessor) as number[]))
@@ -43,16 +29,13 @@ const LineChart = (container: HTMLElement, params: lineChartParams, opts: lineCh
       .range([dimensions.boundedHeight, 0])
       .nice()
 
-    drawLines(bounds, params.dataset, xScale, yScale, { color, curve: d3.curveBumpX })
-
-    renderAxis(bounds, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, yScale as d3.AxisScale<d3.AxisDomain>, {
+    renderAxis(visor!, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, yScale as d3.AxisScale<d3.AxisDomain>, {
       showXGrid: true,
       xLabel: 'solidy',
       yLabel: 'quora',
       noYTick: true,
     })
+    renderLines(visor!, params.dataset, xScale, yScale, { color, curve: d3.curveBumpX })
   }
-
-  createVisor(container, renderer, opts)
 }
 export default LineChart

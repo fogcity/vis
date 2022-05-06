@@ -18,7 +18,7 @@ const defaultOptions = {
   curve: d3.curveLinear,
   anim: true,
 }
-export function drawLines(
+export function renderLines(
   visor: d3.Selection<SVGGElement, unknown, null, undefined>,
   data: linePoint[],
   xScale: d3.ScaleLinear<number, number, never>,

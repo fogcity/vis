@@ -152,19 +152,24 @@ const createVisor = (
   })
 }
 
-const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
-  let computedContainer,
-    wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined,
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | undefined,
-    visor
+export const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
+  let computedContainer
+
   if (typeof container == 'string') {
     computedContainer = document.getElementById(container)
   } else computedContainer = container
-  if (computedContainer && options) {
-    const dimensions = combineDimensions({
+
+  if (computedContainer) {
+    let wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined,
+      svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | undefined,
+      visor,
+      dimensions!: Dimensions
+
+    dimensions = combineDimensions({
       ...{ width: computedContainer.clientWidth, height: computedContainer.clientHeight },
-      ...options,
+      ...options!,
     })
+
     const { width, height, boundedHeight, marginLeft, marginTop, boundedWidth } = dimensions
     wrapper = d3.select(computedContainer)
 
@@ -182,16 +187,12 @@ const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
       .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
       .attr('width', boundedWidth)
       .attr('height', boundedHeight)
+    return { wrapper, svg, visor, dimensions }
   }
-  return { wrapper, svg, visor }
+  return {}
 }
 function clearVisor(wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined) {
   if (wrapper) wrapper.selectAll('*').remove()
 }
-const { visor } = buildVisor('root')
 
-// const l = createLayer()
-// renderXxis()
-// renderYxis()
-// renderAxis()
 export default createVisor
