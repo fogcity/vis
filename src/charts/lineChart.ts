@@ -1,5 +1,7 @@
 import * as d3 from 'd3'
+import { renderAxis } from '../core/axis'
 import { Dimensions } from '../core/dimensions'
+import { drawLines } from '../core/line'
 import createVisor, { VisOptions } from '../core/visor'
 
 type linePoint = [number, number]
@@ -41,76 +43,14 @@ const LineChart = (container: HTMLElement, params: lineChartParams, opts: lineCh
       .range([dimensions.boundedHeight, 0])
       .nice()
 
-    // Draw data
-    const drawLines = (dataset: linePoint[], color: string) => {
-      const lineGenerator = d3
-        .line()
-        .curve(curve)
-        .x((d) => xScale(xAccessor(d)))
-        .y((d) => {
-          return yScale(yAccessor(d))
-        })
-      const line = bounds
-        .append('path')
-        .attr('d', lineGenerator(dataset))
-        .attr('fill', 'none')
-        .attr('stroke', color)
-        .attr('stroke-width', lineWidth)
-    }
+    drawLines(bounds, params.dataset, xScale, yScale, { color, curve: d3.curveBumpX })
 
-    // Draw bottom axis
-    const xAxisGenerator = d3.axisBottom(xScale)
-
-    const xAxis = bounds
-      .append('g')
-      .call(xAxisGenerator)
-      .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-
-    if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
-    if (showXAxisGrid) {
-      const xGrid = bounds
-        .append('g')
-        .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
-        // .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xAxisGridColor))
-    }
-    if (opts.xLabel) {
-      const xAxisLabel = xAxis
-        .append('text')
-        .attr('x', dimensions.boundedWidth / 2)
-        .attr('y', (dimensions.marginBottom / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .html(opts.xLabel)
-    }
-    // Draw left axis
-    const yAxisGenerator = d3.axisLeft(yScale)
-    const yAxis = bounds.append('g').call(yAxisGenerator)
-
-    if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
-    if (showYAxisGrid) {
-      const yGrid = bounds
-        .append('g')
-        .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yAxisGridColor))
-    }
-    if (opts.yLabel) {
-      const yAxisLabel = yAxis
-        .append('text')
-        .attr('x', -dimensions.boundedHeight / 2)
-        .attr('y', (-dimensions.marginLeft / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .text(opts.yLabel)
-        .style('transform', 'rotate(-90deg)')
-        .style('text-anchor', 'middle')
-    }
-
-    drawLines(params.dataset, color)
+    renderAxis(bounds, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, yScale as d3.AxisScale<d3.AxisDomain>, {
+      showXGrid: true,
+      xLabel: 'solidy',
+      yLabel: 'quora',
+      noYTick: true,
+    })
   }
 
   createVisor(container, renderer, opts)

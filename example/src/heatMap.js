@@ -9,7 +9,7 @@ const dataset = [...new Array(25)].map((v, i) => ({
 }))
 
 vis.renderHeatMap(document.getElementById('root6'), dataset, {
-  startColor: '#EF5D5E',
+  startColor: 'rgb(107, 0, 255)',
   endColor: '#110C2F',
   paddingInnerX: 0.1,
   paddingInnerY: 0.1,

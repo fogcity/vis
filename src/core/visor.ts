@@ -38,6 +38,7 @@ const debounce = (fn: Function, delay: number = 500): Function => {
   return function (this: any, ...args: any) {
     if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
+      2
       fn.apply(this, args)
     }, delay)
   }
@@ -107,7 +108,6 @@ export class Visor {
   }
 }
 
-// const v = new Visor('root', {})
 const createVisor = (
   container: HTMLElement | string,
   renderer?: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => void,
@@ -159,8 +159,7 @@ const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
     visor
   if (typeof container == 'string') {
     computedContainer = document.getElementById(container)
-  } else computedContainer = container as HTMLElement
-
+  } else computedContainer = container
   if (computedContainer && options) {
     const dimensions = combineDimensions({
       ...{ width: computedContainer.clientWidth, height: computedContainer.clientHeight },
@@ -189,8 +188,8 @@ const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
 function clearVisor(wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined) {
   if (wrapper) wrapper.selectAll('*').remove()
 }
-const { wrapper, svg, visor } = buildVisor('root')
-clearVisor(wrapper)
+const { visor } = buildVisor('root')
+
 // const l = createLayer()
 // renderXxis()
 // renderYxis()

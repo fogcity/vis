@@ -11,7 +11,7 @@ vis.renderBarChart(
     noYAxisLine: true,
     showXAxisGrid: true,
     horizontal: true,
-    color: '#781D42',
+    color: 'rgb(107, 0, 255)',
     xAccessor: (d) => d.key,
     yAccessor: (d) => d.value,
   },

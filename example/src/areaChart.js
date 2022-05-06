@@ -10,7 +10,7 @@ vis.renderAreaChart(
   {
     showXAxisGrid: true,
     showYAxisGrid: true,
-    color: '#781D42',
+    color: 'rgb(107, 0, 255)',
     curve: d3.curveBasis,
     xAccessor: (d) => d[0],
     yAccessor: (d) => d[1],
