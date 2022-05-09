@@ -31,7 +31,7 @@ export type VisOptions = {
   xTicks?: number
 } & Dimensions
 
-export type ChartData = { values: { index: number; value: number }[]; series?: any[] }
+export type ChartData = { values: { index: number; value: number }[] }
 
 const debounce = (fn: Function, delay: number = 500): Function => {
   let timer: any
@@ -47,7 +47,7 @@ const debounce = (fn: Function, delay: number = 500): Function => {
 export class Visor {
   wrapper!: d3.Selection<HTMLElement, unknown, null, undefined>
   bound!: d3.Selection<SVGGElement, unknown, null, undefined>
-  dimensions!: Dimensions
+  dimensions!: Required<Dimensions>
   layers: Layer[] = []
   constructor(container: HTMLElement | string, public options: Dimensions, resize: boolean = true) {
     // Init the container element
@@ -59,7 +59,8 @@ export class Visor {
 
       if (targetElement) {
         this.dimensions = combineDimensions({
-          ...{ width: targetElement.clientWidth, height: targetElement.clientHeight },
+          width: targetElement.clientWidth,
+          height: targetElement.clientHeight,
           ...options,
         })
         const { width, height, marginLeft, marginTop, boundedHeight, boundedWidth } = this.dimensions
@@ -121,7 +122,8 @@ const createVisor = (
 
     if (ct && opts) {
       const dimensions = combineDimensions({
-        ...{ width: ct.clientWidth, height: ct.clientHeight },
+        width: ct.clientWidth,
+        height: ct.clientHeight,
         ...opts,
       })
 
@@ -163,12 +165,14 @@ export const buildVisor = (container: HTMLElement | string, options?: VisOptions
     let wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined,
       svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | undefined,
       visor,
-      dimensions!: Dimensions
+      dimensions!: Required<Dimensions>
 
     dimensions = combineDimensions({
-      ...{ width: computedContainer.clientWidth, height: computedContainer.clientHeight },
+      width: computedContainer.clientWidth,
+      height: computedContainer.clientHeight,
       ...options!,
     })
+    console.log('dimensions', dimensions)
 
     const { width, height, boundedHeight, marginLeft, marginTop, boundedWidth } = dimensions
     wrapper = d3.select(computedContainer)

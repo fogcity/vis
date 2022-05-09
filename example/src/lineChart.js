@@ -11,9 +11,9 @@ const dataset = [...new Array(50)].map((v, i) => [i, randn()])
 
 vis.renderLineChart(
   document.getElementById('root2'),
-  {
-    dataset,
-  },
+
+  dataset,
+
   {
     showXAxisGrid: true,
     showYAxisGrid: true,

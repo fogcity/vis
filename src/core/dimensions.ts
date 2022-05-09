@@ -1,4 +1,4 @@
-export type Dimensions = {
+export type Dimensions = Partial<{
   height: number
   width: number
   marginTop: number
@@ -7,9 +7,9 @@ export type Dimensions = {
   marginLeft: number
   boundedHeight: number
   boundedWidth: number
-}
+}>
 
-export const combineDimensions = (dim: Dimensions) => {
+export const combineDimensions = (dim: Dimensions & { height: number; width: number }): Required<Dimensions> => {
   const defaultDim = {
     marginTop: 50,
     marginRight: 50,
@@ -24,12 +24,7 @@ export const combineDimensions = (dim: Dimensions) => {
 
   return {
     ...mergedDim,
-    boundedHeight: Math.max(mergedDim?.height - mergedDim.marginTop - mergedDim.marginBottom, 0),
-    boundedWidth: Math.max(mergedDim?.width - mergedDim.marginLeft - mergedDim.marginRight, 0),
+    boundedHeight: mergedDim.height - mergedDim.marginTop - mergedDim.marginBottom,
+    boundedWidth: mergedDim.width - mergedDim.marginLeft - mergedDim.marginRight,
   }
-}
-
-export const useDimensions = (dim: Dimensions) => {
-  const combinedDim = combineDimensions(dim)
-  return [combinedDim, combineDimensions]
 }
