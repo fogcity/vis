@@ -7,9 +7,6 @@ vis.renderBarChart(
     dataset,
   },
   {
-    noXAxisLine: true,
-    noYAxisLine: true,
-    showXAxisGrid: true,
     horizontal: true,
     color: 'rgb(107, 0, 255)',
     xAccessor: (d) => d.key,

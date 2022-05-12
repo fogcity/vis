@@ -3,15 +3,13 @@ import { vis } from '../build'
 vis.renderScatterPlot(
   document.getElementById('root3'),
   {
-    dataset: [...new Array(50)].map((v) => ({
-      x: Math.ceil(Math.random() * 10),
-      y: Math.ceil(Math.random() * 10),
+    dataset: [...new Array(200)].map((v) => ({
+      x: Math.ceil(Math.random() * 100),
+      y: Math.ceil(Math.random() * 40),
     })),
   },
   {
     xDomain: [-2, 12],
-    showXAxisGrid: true,
-    showYAxisGrid: true,
     noXAxisLine: true,
     noYAxisLine: true,
     noYAxisTick: true,
