@@ -16,7 +16,6 @@ This is a superset of the most commonly used front-end charts based on D3, guidi
 [![Coverage Status](https://img.shields.io/codecov/c/github/mui-org/material-vis/master.svg)](https://codecov.io/gh/mui-org/material-vis/branch/master)
 [![Renovate status](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://github.com/mui-org/material-vis/issues/27062)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/mui-org/material-vis.svg)](https://isitmaintained.com/project/mui-org/material-vis 'Average time to resolve an issue')
-[![Crowdin](https://badges.crowdin.net/material-vis-docs/localized.svg)](https://translate.mui.com/project/material-vis-docs)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/mui)](https://opencollective.com/mui)
 
 </div>
@@ -29,10 +28,10 @@ Vis is unavailable as an [npm package](https://www.npmjs.com/package/).
 
 ```sh
 // with npm
-npm install vis @emotion/react
+npm install vis
 
 // with yarn
-yarn add vis @emotion/react
+yarn add vis
 ```
 
 ## Major features
@@ -57,7 +56,7 @@ import LineChart from 'vis'
 
 function App() {
   useEffect(() => {
-    LineChart
+    LineChart.render('chart')
   })
   return <div id="chart" />
 }
