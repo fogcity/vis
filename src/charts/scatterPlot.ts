@@ -12,7 +12,7 @@ type ScatterPlotOpts = VisOptions & {
   hollow: boolean
 }
 const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const {
       showXAxisGrid = false,
       showYAxisGrid = false,

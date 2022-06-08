@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import { renderAxis } from '../core/axis'
 import { renderLines } from '../core/line'
+import { scaleLinear } from '../core/scales'
 import { buildVisor, VisOptions } from '../core/visor'
 
 type linePoint = [number, number]
@@ -17,20 +18,15 @@ const LineChart = (container: HTMLElement, dataset: linePoint[], opts: lineChart
   if (visor && dimensions) {
     const { boundedWidth, boundedHeight } = dimensions
     const { yAccessor, xAccessor, color, xDomain, yDomain, curve, ...rest } = opts
-    const xScale = d3
-      .scaleLinear()
-      .domain(xDomain || (d3.extent(dataset, xAccessor) as number[]))
-      .range([0, boundedWidth])
-      .nice()
 
-    const yScale = d3
-      .scaleLinear()
-      .domain(yDomain || (d3.extent(dataset, yAccessor) as number[]))
-      .range([boundedHeight, 0])
-      .nice()
+    const xScale = scaleLinear((xDomain as [number, number]) || d3.extent(dataset, xAccessor), [0, boundedWidth]).nice()
+    const yScale = scaleLinear((yDomain as [number, number]) || (d3.extent(dataset, yAccessor) as number[]), [
+      boundedHeight,
+      0,
+    ]).nice()
 
-    renderAxis(visor!, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, yScale as d3.AxisScale<d3.AxisDomain>, rest)
-
+    const xAxis = renderAxis('x', visor!, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, rest)
+    const yAxis = renderAxis('y', visor!, dimensions, yScale as d3.AxisScale<d3.AxisDomain>, rest)
     renderLines(visor!, dataset, xScale, yScale, { color, curve })
   }
 }

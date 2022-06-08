@@ -1,94 +1,121 @@
 import * as d3 from 'd3'
 import { Dimensions } from './dimensions'
+import vars from '../theme/vars'
+
 type AxisOptions = Partial<{
-  noXLine: boolean
-  showXGrid: boolean
-  noYLine: boolean
-  showYGrid: boolean
-  xGridColor: string
-  yGridColor: string
-  xLabel: string
-  yLabel: string
-  noXTick: boolean
-  noYTick: boolean
+  noLine: boolean
+  showGrid: boolean
+  gridColor: string
+  label: string
+  noTick: boolean
+  color: string
+
   fontSize: string
 }>
-const defaultOptions = {
-  noXLine: false,
-  noXTick: false,
-  showXGrid: false,
-  noYLine: false,
-  showYGrid: false,
-  xGridColor: 'initial',
-  yGridColor: 'red',
-  xLabel: '',
-  yLabel: '',
-  noYTick: false,
-  fontSize: '1.2em',
+
+abstract class Axis {
+  noLine = true
+  showGrid = false
+  gridColor = vars.color.greyLight
+  color = vars.color.greyLight
+  label = ''
+  noTick = true
+  fontSize = '1rem'
+  constructor(
+    public visor: d3.Selection<SVGGElement, unknown, null, undefined>,
+    public dimensions: Required<Dimensions>,
+    public scale: d3.AxisScale<d3.AxisDomain>,
+    options: AxisOptions,
+  ) {
+    for (const key of Object.keys(options)) {
+      this[key] = options[key]
+    }
+    Object.keys(options)
+  }
+
+  abstract render: () => any
+}
+
+class XAxis extends Axis {
+  render = () => {
+    const { boundedHeight, boundedWidth, marginBottom } = this.dimensions
+    const { noTick, noLine, showGrid, gridColor, label, fontSize, color, scale, visor } = this
+    // create axisGenerator
+    const xAxisGenerator = d3.axisBottom(scale)
+
+    // render axis & translate to correct position
+    const xAxis = visor
+      .append('g')
+      .call(xAxisGenerator)
+      .style('color', color)
+      .style('transform', `translateY(${boundedHeight}px)`)
+
+    // if render
+    if (noTick) xAxis.call((g) => g.selectAll('.tick line').remove())
+    if (noLine) xAxis.call((g) => g.select('.domain').remove())
+    if (showGrid) {
+      const xGrid = visor
+        .append('g')
+        .call(d3.axisBottom(scale).tickSize(boundedHeight))
+        .call((g) => g.select('.domain').remove())
+        .call((g) => g.selectAll('.tick text').remove())
+        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', gridColor))
+    }
+    if (label) {
+      const xAxisLabel = xAxis
+        .append('text')
+        .attr('x', boundedWidth / 2)
+        .attr('y', (marginBottom / 3) * 2)
+        .attr('fill', 'black')
+        .style('font-size', fontSize)
+        .html(label)
+    }
+  }
+}
+class YAxis extends Axis {
+  render = () => {
+    const { boundedHeight, boundedWidth, marginLeft } = this.dimensions
+    const { noTick, noLine, showGrid, gridColor, label, fontSize, color, scale, visor } = this
+
+    const yAxisGenerator = d3.axisLeft(scale)
+
+    const yAxis = visor.append('g').call(yAxisGenerator).style('color', color)
+    if (noTick) yAxis.call((g) => g.selectAll('.tick line').remove())
+    if (noLine) yAxis.call((g) => g.select('.domain').remove())
+    if (showGrid) {
+      const yGrid = visor
+        .append('g')
+        .call(d3.axisRight(scale).tickSize(boundedWidth))
+        .call((g) => g.select('.domain').remove())
+        .call((g) => g.selectAll('.tick text').remove())
+        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', gridColor))
+    }
+    if (label) {
+      const yAxisLabel = yAxis
+        .append('text')
+        .attr('x', -boundedHeight / 2)
+        .attr('y', (-marginLeft / 3) * 2)
+        .attr('fill', 'black')
+        .style('font-size', fontSize)
+        .text(label)
+        .style('transform', 'rotate(-90deg)')
+        .style('text-anchor', 'middle')
+    }
+  }
 }
 export function renderAxis(
+  type: 'x' | 'y',
   visor: d3.Selection<SVGGElement, unknown, null, undefined>,
-  dimensions: Dimensions,
-  xScale: d3.AxisScale<d3.AxisDomain>,
-  yScale: d3.AxisScale<d3.AxisDomain>,
-  opts?: AxisOptions,
+  dimensions: Required<Dimensions>,
+  scale: d3.AxisScale<d3.AxisDomain>,
+  options: AxisOptions = {},
 ) {
-  const { boundedHeight, boundedWidth, marginBottom, marginLeft } = dimensions
-  const { noXTick, noYTick, noXLine, showXGrid, noYLine, showYGrid, xGridColor, yGridColor, xLabel, yLabel, fontSize } =
-    {
-      ...defaultOptions,
-      ...opts,
-    }
-
-  // Draw bottom axis
-  const xAxisGenerator = d3.axisBottom(xScale)
-
-  const xAxis = visor.append('g').call(xAxisGenerator).style('transform', `translateY(${boundedHeight}px)`)
-  if (noXTick) xAxis.call((g) => g.selectAll('.tick line').remove())
-  if (noXLine) xAxis.call((g) => g.select('.domain').remove())
-  if (showXGrid) {
-    const xGrid = visor
-      .append('g')
-      .call(d3.axisBottom(xScale).tickSize(boundedHeight))
-      .call((g) => g.select('.domain').remove())
-      .call((g) => g.selectAll('.tick text').remove())
-      .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xGridColor))
+  let a: Axis
+  if (type == 'x') {
+    a = new XAxis(visor, dimensions, scale, options)
+  } else {
+    a = new YAxis(visor, dimensions, scale, options)
   }
-  if (xLabel) {
-    const xAxisLabel = xAxis
-      .append('text')
-      .attr('x', boundedWidth / 2)
-      .attr('y', (marginBottom / 3) * 2)
-      .attr('fill', 'black')
-      .style('font-size', fontSize)
-      .html(xLabel)
-  }
-
-  // Draw left axis
-  const yAxisGenerator = d3.axisLeft(yScale)
-
-  const yAxis = visor.append('g').call(yAxisGenerator)
-  if (noYTick) yAxis.call((g) => g.selectAll('.tick line').remove())
-  if (noYLine) yAxis.call((g) => g.select('.domain').remove())
-
-  if (showYGrid) {
-    const yGrid = visor
-      .append('g')
-      .call(d3.axisRight(yScale).tickSize(boundedWidth))
-      .call((g) => g.select('.domain').remove())
-      .call((g) => g.selectAll('.tick text').remove())
-      .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yGridColor))
-  }
-
-  if (yLabel) {
-    const yAxisLabel = yAxis
-      .append('text')
-      .attr('x', -boundedHeight / 2)
-      .attr('y', (-marginLeft / 3) * 2)
-      .attr('fill', 'black')
-      .style('font-size', fontSize)
-      .text(yLabel)
-      .style('transform', 'rotate(-90deg)')
-      .style('text-anchor', 'middle')
-  }
+  a.render()
+  return a
 }

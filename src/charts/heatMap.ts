@@ -14,7 +14,7 @@ type HeatMapOptions = VisOptions & {
 }
 
 const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOptions) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const {
       xAccessor = (d) => d.x,
       yAccessor = (d) => d.y,

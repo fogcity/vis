@@ -13,7 +13,7 @@ vis.renderScatterPlot(
     noXAxisLine: true,
     noYAxisLine: true,
     noYAxisTick: true,
-    color: 'rgb(107, 0, 255)',
+    color: '#5356FB',
     xAccessor: (d) => d.x,
     yAccessor: (d) => d.y,
     rAccessor: (d) => Math.min(d.y, 10),

@@ -28,7 +28,7 @@ export type TreeOptions = VisOptions & {
   haloWidth: number // padding around the labels
 }
 const Tree = (container: HTMLElement, data: TreeData, options: TreeOptions) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const { boundedHeight, boundedWidth } = dimensions
     const {
       path,

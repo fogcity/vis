@@ -111,7 +111,7 @@ export class Visor {
 
 const createVisor = (
   container: HTMLElement | string,
-  renderer?: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => void,
+  renderer?: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => void,
   opts?: VisOptions,
 ) => {
   const render = debounce(() => {
@@ -172,7 +172,6 @@ export const buildVisor = (container: HTMLElement | string, options?: VisOptions
       height: computedContainer.clientHeight,
       ...options!,
     })
-    console.log('dimensions', dimensions)
 
     const { width, height, boundedHeight, marginLeft, marginTop, boundedWidth } = dimensions
     wrapper = d3.select(computedContainer)

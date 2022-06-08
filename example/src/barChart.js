@@ -8,7 +8,7 @@ vis.renderBarChart(
   },
   {
     horizontal: true,
-    color: 'rgb(107, 0, 255)',
+    color: '#5356FB',
     xAccessor: (d) => d.key,
     yAccessor: (d) => d.value,
   },

@@ -19,7 +19,7 @@ type StackedBarChartOptions = VisOptions & {
 }
 
 const StackedBarChart = (container: HTMLElement, data: SeriesDataItem[], options: StackedBarChartOptions) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const {
       showXAxisGrid = false,
       showYAxisGrid = false,

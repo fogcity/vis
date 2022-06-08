@@ -11,7 +11,7 @@ type AreaChartOpts = VisOptions & {
   curve: d3.CurveFactory
 }
 const AreaChart = (container: HTMLElement, params: AreaChartParams, opts: AreaChartOpts) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const {
       showXAxisGrid = false,
       showYAxisGrid = false,

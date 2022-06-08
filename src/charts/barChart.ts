@@ -12,7 +12,7 @@ type BarChartOpts = VisOptions & {
   gap: number
 }
 const BarChart = (container: HTMLElement, params: BarChartParams, opts: BarChartOpts) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Dimensions) => {
+  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
     const {
       showXAxisGrid = false,
       showYAxisGrid = false,

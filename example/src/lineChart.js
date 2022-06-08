@@ -17,9 +17,9 @@ vis.renderLineChart(
   {
     showXAxisGrid: true,
     showYAxisGrid: true,
-    color: 'rgb(107, 0, 255)',
+    color: '#5356FB',
     lineWidth: 2.5,
-    curve: d3.curveNatural,
+    curve: d3.curveBasis,
     xAccessor: (d) => d[0],
     yAccessor: (d) => d[1],
   },
