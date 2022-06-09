@@ -6,9 +6,9 @@ export type VisOptions = {
   xLabel?: string // Label for xAxis
   yLabel?: string // Label for yAxis
   fontSize?: string
-  xDomain?: any[]
-  yDomain?: any[]
-  zDomain?: any[]
+  xDomain?: [any, any]
+  yDomain?: [any, any]
+  zDomain?: [any, any]
   noYAxisLine?: boolean
   noXAxisLine?: boolean
   noYAxisTick?: boolean
@@ -20,8 +20,8 @@ export type VisOptions = {
   xType?: Function
   yType?: Function
   zType?: Function
-  xRange?: any[]
-  yRange?: any[]
+  xRange?: [any, any]
+  yRange?: [any, any]
   xPadding?: number
   noYAxis?: boolean
   noXAxis?: boolean

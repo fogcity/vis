@@ -1,115 +1,23 @@
 import * as d3 from 'd3'
-import { Dimensions } from '../core/dimensions'
-import createVisor, { VisOptions } from '../core/visor'
+import { renderAxis } from '../core/axis'
+import { renderCircles, CircleData, CircleOptions, defaultOptions } from '../core/circle'
+import { scaleLinear } from '../core/scales'
+import { buildVisor, VisOptions } from '../core/visor'
 
-type ScatterPoint = { x: number; y: number }
-type ScatterPlotParams = { dataset: ScatterPoint[]; series: any[] }
-type ScatterPlotOpts = VisOptions & {
-  yAccessor: (d: ScatterPoint) => number
-  xAccessor: (d: ScatterPoint) => number
-  rAccessor: (d: ScatterPoint) => number
-  color: string
-  hollow: boolean
-}
-const ScatterPlot = (container: HTMLElement, params: ScatterPlotParams, opts: ScatterPlotOpts) => {
-  const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
-    const {
-      showXAxisGrid = false,
-      showYAxisGrid = false,
-      xAxisGridColor = '#eee',
-      yAxisGridColor = '#eee',
-      hollow = false,
-      yAccessor,
-      xAccessor,
-      rAccessor,
-      color,
-      noYAxisLine = false,
-      noXAxisLine = false,
-    } = opts
+type CircleChartOpts = VisOptions & CircleOptions
 
-    const xScale = d3
-      .scaleLinear()
-      .domain(d3.extent(params.dataset, xAccessor) as number[])
-      .range([0, dimensions.boundedWidth])
-      .nice()
+const LineChart = (container: HTMLElement, dataset: CircleData[], opts: CircleChartOpts) => {
+  const { visor, dimensions } = buildVisor(container)
+  if (visor && dimensions) {
+    const { boundedWidth, boundedHeight } = dimensions
+    const { yAccessor, xAccessor, color, xDomain, yDomain, ...rest } = { ...defaultOptions, ...opts }
 
-    const yScale = d3
-      .scaleLinear()
-      .domain(d3.extent(params.dataset, yAccessor) as number[])
-      .range([dimensions.boundedHeight, 0])
-      .nice()
+    const xScale = scaleLinear(xDomain || d3.extent(dataset, xAccessor), [0, boundedWidth]).nice()
+    const yScale = scaleLinear(yDomain || d3.extent(dataset, yAccessor), [boundedHeight, 0]).nice()
 
-    // Draw data
-    const drawDots = (dataset: any[], color: string) => {
-      const dots = bounds.selectAll('circle').data(dataset)
-      const positionedDots = dots
-        .join('circle')
-        .attr('cx', (d) => xScale(xAccessor(d)))
-        .attr('cy', (d) => yScale(yAccessor(d)))
-        .attr('r', (d) => rAccessor(d))
-
-      if (!hollow) {
-        positionedDots.attr('fill', color)
-      } else {
-        positionedDots.attr('fill', 'transparent').attr('stroke', color)
-      }
-    }
-
-    // Draw bottom axis
-    const xAxisGenerator = d3.axisBottom(xScale)
-
-    const xAxis = bounds
-      .append('g')
-      .call(xAxisGenerator)
-      .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-
-    if (noXAxisLine) xAxis.call((g) => g.select('.domain').remove())
-    if (showXAxisGrid) {
-      const xGrid = bounds
-        .append('g')
-        .call(d3.axisBottom(xScale).tickSize(dimensions.boundedHeight))
-        // .style('transform', `translateY(${dimensions.boundedHeight}px)`)
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', xAxisGridColor))
-    }
-    if (opts.xLabel) {
-      const xAxisLabel = xAxis
-        .append('text')
-        .attr('x', dimensions.boundedWidth / 2)
-        .attr('y', (dimensions.marginBottom / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .html(opts.xLabel)
-    }
-    // Draw left axis
-    const yAxisGenerator = d3.axisLeft(yScale)
-    const yAxis = bounds.append('g').call(yAxisGenerator)
-
-    if (noYAxisLine) yAxis.call((g) => g.select('.domain').remove())
-    if (showYAxisGrid) {
-      const yGrid = bounds
-        .append('g')
-        .call(d3.axisRight(yScale).tickSize(dimensions.boundedWidth))
-        .call((g) => g.select('.domain').remove())
-        .call((g) => g.selectAll('.tick text').remove())
-        .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', yAxisGridColor))
-    }
-    if (opts.yLabel) {
-      const yAxisLabel = yAxis
-        .append('text')
-        .attr('x', -dimensions.boundedHeight / 2)
-        .attr('y', (-dimensions.marginLeft / 3) * 2)
-        .attr('fill', 'black')
-        .style('font-size', opts?.fontSize || '1.4em')
-        .text(opts.yLabel)
-        .style('transform', 'rotate(-90deg)')
-        .style('text-anchor', 'middle')
-    }
-
-    drawDots(params.dataset, color)
+    const xAxis = renderAxis('x', visor!, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, rest)
+    const yAxis = renderAxis('y', visor!, dimensions, yScale as d3.AxisScale<d3.AxisDomain>, rest)
+    renderCircles(visor, dataset, xScale, yScale, { color })
   }
-
-  createVisor(container, renderer, opts)
 }
-export default ScatterPlot
+export default LineChart

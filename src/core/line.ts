@@ -1,37 +1,28 @@
 import * as d3 from 'd3'
-import { Dimensions } from './dimensions'
-
-type linePoint = [number, number]
-type LineOptions = Partial<{
-  yAccessor: (d: linePoint) => number
-  xAccessor: (d: linePoint) => number
-  lineWidth: number
-  color: string
-  curve: d3.CurveFactoryLineOnly | d3.CurveFactory
-  anim: boolean
-}>
-const defaultOptions = {
-  yAccessor: (d: linePoint) => d[1],
-  xAccessor: (d: linePoint) => d[0],
+export const defaultOptions = {
+  yAccessor: (d: LineData) => d[1],
+  xAccessor: (d: LineData) => d[0],
   lineWidth: 2,
   color: 'black',
   curve: d3.curveLinear,
-  anim: true,
+  anim: false,
 }
+export type LineData = [number, number]
+export type LineOptions = Partial<typeof defaultOptions>
+
 export function renderLines(
   visor: d3.Selection<SVGGElement, unknown, null, undefined>,
-  data: linePoint[],
+  data: LineData[],
   xScale: d3.ScaleLinear<number, number, never>,
   yScale: d3.ScaleLinear<number, number, never>,
-  opts?: LineOptions,
+  options?: LineOptions,
 ) {
-  const { anim, curve, xAccessor, yAccessor, color, lineWidth } = { ...defaultOptions, ...opts }
+  const { anim, curve, xAccessor, yAccessor, color, lineWidth } = { ...defaultOptions, ...options }
   const lineGenerator = d3
-    .line()
-    .curve(curve)
+    .line<LineData>()
     .x((d) => xScale(xAccessor(d)))
     .y((d) => yScale(yAccessor(d)))
-
+    .curve(curve)
   const path = visor
     .append('path')
     .attr('d', lineGenerator(data))
