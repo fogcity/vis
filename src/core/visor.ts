@@ -162,33 +162,29 @@ export const buildVisor = (container: HTMLElement | string, options?: Dimensions
   } else root = container
 
   if (root) {
-    let wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined,
-      svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | undefined,
-      visor,
-      dimensions: Required<Dimensions>
-
-    dimensions = combineDimensions({
+    const dimensions = combineDimensions({
       width: root.clientWidth,
       height: root.clientHeight,
       ...options,
     })
 
     const { width, height, visorHeight, marginLeft, marginTop, visorWidth } = dimensions
-    wrapper = d3.select(root)
+    const wrapper = d3.select(root)
 
     clearVisor(wrapper)
 
-    svg = wrapper
+    const svg = wrapper
       .append('svg')
       .attr('viewbox', `0 0 ${width} ${height}`)
       .style('min-width', '100%')
       .style('min-height', '100%')
 
-    visor = svg
+    const visor = svg
       .append('g')
       .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
       .attr('width', visorWidth)
       .attr('height', visorHeight)
+
     return { wrapper, svg, visor, dimensions }
   }
   return root
