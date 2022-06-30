@@ -29,7 +29,7 @@ export type TreeOptions = VisOptions & {
 }
 const Tree = (container: HTMLElement, data: TreeData, options: TreeOptions) => {
   const renderer = (bounds: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => {
-    const { boundedHeight, boundedWidth } = dimensions
+    const { visorHeight, visorWidth } = dimensions
     const {
       path,
       id = Array.isArray(data) ? (d: { id: string }) => d.id : null,
@@ -53,7 +53,7 @@ const Tree = (container: HTMLElement, data: TreeData, options: TreeOptions) => {
       haloWidth = 3,
     } = options
 
-    const treemap = d3.tree<TreeData>().size([boundedWidth, boundedHeight])
+    const treemap = d3.tree<TreeData>().size([visorWidth, visorHeight])
     let nodes = d3.hierarchy(data, (d) => d.children)
     nodes = treemap(nodes)
 

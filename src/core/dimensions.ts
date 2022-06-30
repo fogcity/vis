@@ -5,26 +5,26 @@ export type Dimensions = Partial<{
   marginRight: number
   marginBottom: number
   marginLeft: number
-  boundedHeight: number
-  boundedWidth: number
+  visorHeight: number
+  visorWidth: number
 }>
 
-export const combineDimensions = (dim: Dimensions & { height: number; width: number }): Required<Dimensions> => {
-  const defaultDim = {
+export const combineDimensions = (dimensions: Dimensions & { height: number; width: number }): Required<Dimensions> => {
+  const defaultDimensions = {
     marginTop: 50,
     marginRight: 50,
     marginBottom: 50,
     marginLeft: 50,
   }
 
-  const mergedDim = {
-    ...defaultDim,
-    ...dim,
+  const mergedDimensions = {
+    ...defaultDimensions,
+    ...dimensions,
   }
 
   return {
-    ...mergedDim,
-    boundedHeight: mergedDim.height - mergedDim.marginTop - mergedDim.marginBottom,
-    boundedWidth: mergedDim.width - mergedDim.marginLeft - mergedDim.marginRight,
+    ...mergedDimensions,
+    visorHeight: mergedDimensions.height - mergedDimensions.marginTop - mergedDimensions.marginBottom,
+    visorWidth: mergedDimensions.width - mergedDimensions.marginLeft - mergedDimensions.marginRight,
   }
 }

@@ -27,8 +27,8 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
       xType = d3.scaleBand,
       yType = d3.scaleBand,
       zType = d3.scaleLinear,
-      xRange = [0, dimensions.boundedWidth],
-      yRange = [dimensions.boundedHeight, 0],
+      xRange = [0, dimensions.visorWidth],
+      yRange = [dimensions.visorHeight, 0],
       noXAxisTick = true,
       noYAxisTick = true,
       noYAxisLine = true,
@@ -44,10 +44,7 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
     // Draw bottom axis
 
     const xAxisGenerator = d3.axisBottom(xScale)
-    const xAxis = bounds
-      .append('g')
-      .call(xAxisGenerator)
-      .style('transform', `translateY(${dimensions.boundedHeight}px)`)
+    const xAxis = bounds.append('g').call(xAxisGenerator).style('transform', `translateY(${dimensions.visorHeight}px)`)
 
     if (noXAxisTick) xAxis.call((g) => g.selectAll('.tick line').remove())
     if (noXAxisLine)
@@ -58,7 +55,7 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
     if (options.xLabel) {
       const xAxisLabel = xAxis
         .append('text')
-        .attr('x', dimensions.boundedWidth / 2)
+        .attr('x', dimensions.visorWidth / 2)
         .attr('y', (dimensions.marginBottom / 3) * 2)
         .attr('fill', 'black')
         .style('font-size', options?.fontSize || '1.4em')
@@ -73,7 +70,7 @@ const HeatMap = (container: HTMLElement, data: HeatMapData[], options: HeatMapOp
     if (options.yLabel) {
       const yAxisLabel = yAxis
         .append('text')
-        .attr('x', -dimensions.boundedHeight / 2)
+        .attr('x', -dimensions.visorHeight / 2)
         .attr('y', (-dimensions.marginLeft / 3) * 2)
         .attr('fill', 'black')
         .style('font-size', options?.fontSize || '1.4em')

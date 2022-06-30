@@ -38,7 +38,7 @@ abstract class Axis {
 
 class XAxis extends Axis {
   render = () => {
-    const { boundedHeight, boundedWidth, marginBottom } = this.dimensions
+    const { visorHeight, visorWidth, marginBottom } = this.dimensions
     const { noTick, noLine, showGrid, gridColor, label, fontSize, color, scale, visor } = this
     // create axisGenerator
     const xAxisGenerator = d3.axisBottom(scale)
@@ -48,7 +48,7 @@ class XAxis extends Axis {
       .append('g')
       .call(xAxisGenerator)
       .style('color', color)
-      .style('transform', `translateY(${boundedHeight}px)`)
+      .style('transform', `translateY(${visorHeight}px)`)
 
     // if render
     if (noTick) xAxis.call((g) => g.selectAll('.tick line').remove())
@@ -56,7 +56,7 @@ class XAxis extends Axis {
     if (showGrid) {
       const xGrid = visor
         .append('g')
-        .call(d3.axisBottom(scale).tickSize(boundedHeight))
+        .call(d3.axisBottom(scale).tickSize(visorHeight))
         .call((g) => g.select('.domain').remove())
         .call((g) => g.selectAll('.tick text').remove())
         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', gridColor))
@@ -64,7 +64,7 @@ class XAxis extends Axis {
     if (label) {
       const xAxisLabel = xAxis
         .append('text')
-        .attr('x', boundedWidth / 2)
+        .attr('x', visorWidth / 2)
         .attr('y', (marginBottom / 3) * 2)
         .attr('fill', 'black')
         .style('font-size', fontSize)
@@ -74,7 +74,7 @@ class XAxis extends Axis {
 }
 class YAxis extends Axis {
   render = () => {
-    const { boundedHeight, boundedWidth, marginLeft } = this.dimensions
+    const { visorHeight, visorWidth, marginLeft } = this.dimensions
     const { noTick, noLine, showGrid, gridColor, label, fontSize, color, scale, visor } = this
 
     const yAxisGenerator = d3.axisLeft(scale)
@@ -85,7 +85,7 @@ class YAxis extends Axis {
     if (showGrid) {
       const yGrid = visor
         .append('g')
-        .call(d3.axisRight(scale).tickSize(boundedWidth))
+        .call(d3.axisRight(scale).tickSize(visorWidth))
         .call((g) => g.select('.domain').remove())
         .call((g) => g.selectAll('.tick text').remove())
         .call((g) => g.selectAll('.tick:not(:first-of-type) line').attr('stroke', gridColor))
@@ -93,7 +93,7 @@ class YAxis extends Axis {
     if (label) {
       const yAxisLabel = yAxis
         .append('text')
-        .attr('x', -boundedHeight / 2)
+        .attr('x', -visorHeight / 2)
         .attr('y', (-marginLeft / 3) * 2)
         .attr('fill', 'black')
         .style('font-size', fontSize)

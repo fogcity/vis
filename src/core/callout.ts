@@ -38,5 +38,5 @@ export function renderCallout(
   dimensions: Dimensions,
   opts?: CalloutOptions,
 ) {
-  const { boundedHeight, boundedWidth, marginBottom, marginLeft } = dimensions
+  const { visorHeight, visorWidth, marginBottom, marginLeft } = dimensions
 }

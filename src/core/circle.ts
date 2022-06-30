@@ -1,4 +1,4 @@
-import * as d3 from 'd3'
+import { Selection, ScaleLinear } from 'd3'
 import vars from '../theme/vars'
 
 export const defaultOptions = {
@@ -13,18 +13,20 @@ export type CircleData = [number, number]
 export type CircleOptions = Partial<typeof defaultOptions>
 
 export function renderCircles(
-  visor: d3.Selection<SVGGElement, unknown, null, undefined>,
+  visor: Selection<SVGGElement, unknown, null, undefined>,
   data: CircleData[],
-  xScale: d3.ScaleLinear<number, number, never>,
-  yScale: d3.ScaleLinear<number, number, never>,
+  xScale: ScaleLinear<number, number, never>,
+  yScale: ScaleLinear<number, number, never>,
   opts?: CircleOptions,
 ) {
   const { color, xAccessor, hollow, yAccessor, rAccessor } = {
     ...defaultOptions,
     ...opts,
   }
-  const dots = visor.selectAll('circle').data(data)
-  const positionedDots = dots
+
+  const positionedDots = visor
+    .selectAll('circle')
+    .data(data)
     .join('circle')
     .attr('cx', (d) => xScale(xAccessor(d)))
     .attr('cy', (d) => yScale(yAccessor(d)))

@@ -63,7 +63,7 @@ export class Visor {
           height: targetElement.clientHeight,
           ...options,
         })
-        const { width, height, marginLeft, marginTop, boundedHeight, boundedWidth } = this.dimensions
+        const { width, height, marginLeft, marginTop, visorHeight, visorWidth } = this.dimensions
         // Select the container element
         this.wrapper = d3.select(targetElement)
         this.clear()
@@ -74,12 +74,12 @@ export class Visor {
         // Creating our bounding box - Visor
         this.bound = svg.append('g')
 
-        svg.attr('viewbox', `0 0 ${boundedWidth} ${boundedHeight}`)
+        svg.attr('viewbox', `0 0 ${visorWidth} ${visorHeight}`)
 
         this.bound
           .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
-          .attr('width', boundedWidth)
-          .attr('height', boundedHeight)
+          .attr('width', visorWidth)
+          .attr('height', visorHeight)
       } else throw new Error('Ensure the provided element exist!')
     })
 
@@ -133,7 +133,7 @@ const createVisor = (
 
       const svg = wrapper
         .append('svg')
-        .attr('viewbox', `0 0 ${dimensions.boundedWidth} ${dimensions.boundedHeight}`)
+        .attr('viewbox', `0 0 ${dimensions.visorWidth} ${dimensions.visorHeight}`)
         .style('min-width', '100%')
         .style('min-height', '100%')
 
@@ -141,8 +141,8 @@ const createVisor = (
       const visor = svg
         .append('g')
         .style('transform', `translate(${dimensions.marginLeft}px, ${dimensions.marginTop}px)`)
-        .attr('width', dimensions.boundedWidth)
-        .attr('height', dimensions.boundedHeight)
+        .attr('width', dimensions.visorWidth)
+        .attr('height', dimensions.visorHeight)
 
       renderer?.(visor, dimensions)
     }
@@ -154,27 +154,27 @@ const createVisor = (
   })
 }
 
-export const buildVisor = (container: HTMLElement | string, options?: VisOptions) => {
-  let computedContainer
+export const buildVisor = (container: HTMLElement | string, options?: Dimensions) => {
+  let root
 
   if (typeof container == 'string') {
-    computedContainer = document.getElementById(container)
-  } else computedContainer = container
+    root = document.getElementById(container)
+  } else root = container
 
-  if (computedContainer) {
+  if (root) {
     let wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined,
       svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | undefined,
       visor,
-      dimensions!: Required<Dimensions>
+      dimensions: Required<Dimensions>
 
     dimensions = combineDimensions({
-      width: computedContainer.clientWidth,
-      height: computedContainer.clientHeight,
-      ...options!,
+      width: root.clientWidth,
+      height: root.clientHeight,
+      ...options,
     })
 
-    const { width, height, boundedHeight, marginLeft, marginTop, boundedWidth } = dimensions
-    wrapper = d3.select(computedContainer)
+    const { width, height, visorHeight, marginLeft, marginTop, visorWidth } = dimensions
+    wrapper = d3.select(root)
 
     clearVisor(wrapper)
 
@@ -184,16 +184,16 @@ export const buildVisor = (container: HTMLElement | string, options?: VisOptions
       .style('min-width', '100%')
       .style('min-height', '100%')
 
-    // Creating our bounding box - Visor
     visor = svg
       .append('g')
       .style('transform', `translate(${marginLeft}px, ${marginTop}px)`)
-      .attr('width', boundedWidth)
-      .attr('height', boundedHeight)
+      .attr('width', visorWidth)
+      .attr('height', visorHeight)
     return { wrapper, svg, visor, dimensions }
   }
-  return {}
+  return root
 }
+
 function clearVisor(wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined) {
   if (wrapper) wrapper.selectAll('*').remove()
 }
