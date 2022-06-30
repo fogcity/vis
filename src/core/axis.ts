@@ -9,7 +9,6 @@ type AxisOptions = Partial<{
   label: string
   noTick: boolean
   color: string
-
   fontSize: string
 }>
 
@@ -72,6 +71,7 @@ class XAxis extends Axis {
     }
   }
 }
+
 class YAxis extends Axis {
   render = () => {
     const { visorHeight, visorWidth, marginLeft } = this.dimensions

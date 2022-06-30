@@ -1,6 +1,8 @@
-import * as d3 from 'd3'
+import { createTheme, createStitches } from '@stitches/core'
+import { select, Selection } from 'd3'
 import { combineDimensions, Dimensions } from './dimensions'
 import { Layer } from './layer'
+
 export type VisOptions = {
   color?: string | string[] // Fill color for bars. Should be a valid CSS color string
   xLabel?: string // Label for xAxis
@@ -45,8 +47,8 @@ const debounce = (fn: Function, delay: number = 500): Function => {
 }
 
 export class Visor {
-  wrapper!: d3.Selection<HTMLElement, unknown, null, undefined>
-  bound!: d3.Selection<SVGGElement, unknown, null, undefined>
+  wrapper!: Selection<HTMLElement, unknown, null, undefined>
+  bound!: Selection<SVGGElement, unknown, null, undefined>
   dimensions!: Required<Dimensions>
   layers: Layer[] = []
   constructor(container: HTMLElement | string, public options: Dimensions, resize: boolean = true) {
@@ -65,7 +67,7 @@ export class Visor {
         })
         const { width, height, marginLeft, marginTop, visorHeight, visorWidth } = this.dimensions
         // Select the container element
-        this.wrapper = d3.select(targetElement)
+        this.wrapper = select(targetElement)
         this.clear()
 
         // Adding an SVG element
@@ -111,7 +113,7 @@ export class Visor {
 
 const createVisor = (
   container: HTMLElement | string,
-  renderer?: (visor: d3.Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => void,
+  renderer?: (visor: Selection<SVGGElement, unknown, null, undefined>, dimensions: Required<Dimensions>) => void,
   opts?: VisOptions,
 ) => {
   const render = debounce(() => {
@@ -127,7 +129,7 @@ const createVisor = (
         ...opts,
       })
 
-      const wrapper = d3.select(ct)
+      const wrapper = select(ct)
 
       wrapper.selectAll('*').remove()
 
@@ -162,6 +164,11 @@ export const buildVisor = (container: HTMLElement | string, options?: Dimensions
   } else root = container
 
   if (root) {
+    const theme = createTheme({
+      theme: {
+        color: 'white',
+      },
+    })
     const dimensions = combineDimensions({
       width: root.clientWidth,
       height: root.clientHeight,
@@ -169,7 +176,7 @@ export const buildVisor = (container: HTMLElement | string, options?: Dimensions
     })
 
     const { width, height, visorHeight, marginLeft, marginTop, visorWidth } = dimensions
-    const wrapper = d3.select(root)
+    const wrapper = select(root)
 
     clearVisor(wrapper)
 
@@ -187,10 +194,10 @@ export const buildVisor = (container: HTMLElement | string, options?: Dimensions
 
     return { wrapper, svg, visor, dimensions }
   }
-  return root
+  return {}
 }
 
-function clearVisor(wrapper: d3.Selection<HTMLElement, unknown, null, undefined> | undefined) {
+function clearVisor(wrapper: Selection<HTMLElement, unknown, null, undefined> | undefined) {
   if (wrapper) wrapper.selectAll('*').remove()
 }
 

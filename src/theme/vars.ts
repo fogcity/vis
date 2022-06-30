@@ -12,7 +12,6 @@ const vars = {
     greyLight: '#B8BCBF',
     white: '#fff',
   },
-  input: { padding: '7px 13px 7px 10px' },
   transition: {
     time: '.25s',
   },
