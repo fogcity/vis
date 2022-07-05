@@ -23,34 +23,32 @@ export function renderHeatMap(
   yScale: ScaleBand<string>,
   options?: HeatMapOptions,
 ) {
-  const {
-    width = xScale.bandwidth(),
-    height = yScale.bandwidth(),
-    xAccessor,
-    yAccessor,
-    zAccessor,
-    x = function (d: HeatMapData) {
-      const v = xAccessor(d)
-      return xScale(v) || 0
-    },
-    y = function (d: HeatMapData) {
-      const v = yAccessor(d)
-      return yScale(v) || 0
-    },
-    color,
-  } = { ...defaultOptions, ...options }
-  const zDomain = data.map(zAccessor)
-  const colorScale = scaleLinear(extent(zDomain) as [number, number], color)
+  const { xAccessor, yAccessor, zAccessor, x, y, width, height, color } = { ...defaultOptions, ...options }
+
+  const colorScale = scaleLinear(extent(data.map(zAccessor)) as [number, number], color)
 
   visor
     .selectAll('rect')
     .data(data)
-    .enter()
-    .append('rect')
-    .attr('x', x)
-    .attr('y', y)
-    .attr('width', width)
-    .attr('height', height)
+    .join('rect')
+    .attr(
+      'x',
+      x ||
+        ((d: HeatMapData) => {
+          const v = xAccessor(d)
+          return xScale(v) || 0
+        }),
+    )
+    .attr(
+      'y',
+      y ||
+        ((d: HeatMapData) => {
+          const v = yAccessor(d)
+          return yScale(v) || 0
+        }),
+    )
+    .attr('width', width || xScale.bandwidth())
+    .attr('height', height || yScale.bandwidth())
     .style('fill', (d) => {
       return colorScale(zAccessor(d))
     })

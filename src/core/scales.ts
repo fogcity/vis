@@ -9,6 +9,7 @@ const scaleLinear = (domian: [number, number], range: [number, number]) => d3.sc
  * discrete => continuous
  */
 const scaleBand = (domian: string[], range: [number, number]) => d3.scaleBand().domain(domian).range(range)
+
 /**
  * discrete => discrete
  */
