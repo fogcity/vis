@@ -39,7 +39,6 @@ export function renderArcs(
         ])
       : data
 
-  console.log('combinedDataset', combinedDataset)
   const arcGenerator = d3
     .arc()
     .innerRadius(Math.min(outerRadius, innerRadius)) // set to 0 for a pie chart
