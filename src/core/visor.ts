@@ -1,4 +1,3 @@
-import { createTheme, createStitches } from '@stitches/core'
 import { select, Selection } from 'd3'
 import { combineDimensions, Dimensions } from './dimensions'
 import { Layer } from './layer'
@@ -164,11 +163,6 @@ export const buildVisor = (container: HTMLElement | string, options?: Dimensions
   } else root = container
 
   if (root) {
-    const theme = createTheme({
-      theme: {
-        color: 'white',
-      },
-    })
     const dimensions = combineDimensions({
       width: root.clientWidth,
       height: root.clientHeight,

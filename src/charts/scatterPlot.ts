@@ -15,8 +15,8 @@ const LineChart = (container: HTMLElement, dataset: CircleData[], opts: CircleCh
     const xScale = scaleLinear(xDomain || extent(dataset, xAccessor), [0, visorWidth]).nice()
     const yScale = scaleLinear(yDomain || extent(dataset, yAccessor), [visorHeight, 0]).nice()
 
-    const xAxis = renderAxis('x', visor!, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, rest)
-    const yAxis = renderAxis('y', visor!, dimensions, yScale as d3.AxisScale<d3.AxisDomain>, rest)
+    const xAxis = renderAxis('x', visor, dimensions, xScale as d3.AxisScale<d3.AxisDomain>, rest)
+    const yAxis = renderAxis('y', visor, dimensions, yScale as d3.AxisScale<d3.AxisDomain>, rest)
     renderCircles(visor, dataset, xScale, yScale, { color })
   }
 }
