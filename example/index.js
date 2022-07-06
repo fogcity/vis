@@ -1,5 +1,5 @@
 import './src/lineChart'
-// import './src/barChart'
+import './src/barChart'
 import './src/scatter'
 import './src/pieChart'
 import './src/heatMap'
