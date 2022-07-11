@@ -30,7 +30,7 @@ export function renderCircles(
     .join('circle')
     .attr('cx', (d) => xScale(xAccessor(d)))
     .attr('cy', (d) => yScale(yAccessor(d)))
-    .attr('r', (d) => rAccessor(d))
+    .attr('r', (d) => d[0] / 10)
 
   if (!hollow) {
     positionedDots.attr('fill', color)

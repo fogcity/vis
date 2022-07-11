@@ -4,9 +4,9 @@ import { renderCircles, CircleData, CircleOptions, defaultOptions } from '../cor
 import { scaleLinear } from '../core/scales'
 import { buildVisor, VisOptions } from '../core/visor'
 
-type CircleChartOpts = VisOptions & CircleOptions
+type ScatterChartOpts = VisOptions & CircleOptions
 
-const LineChart = (container: HTMLElement, dataset: CircleData[], opts: CircleChartOpts) => {
+const ScatterChart = (container: HTMLElement, dataset: CircleData[], opts: ScatterChartOpts) => {
   const { visor, dimensions } = buildVisor(container)
   if (visor && dimensions) {
     const { visorWidth, visorHeight } = dimensions
@@ -20,4 +20,4 @@ const LineChart = (container: HTMLElement, dataset: CircleData[], opts: CircleCh
     renderCircles(visor, dataset, xScale, yScale, { color })
   }
 }
-export default LineChart
+export default ScatterChart
